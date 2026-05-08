@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#D4EEEC">
+    android:background="@drawable/background">
 
     <!-- Header with back button -->
     <LinearLayout
@@ -159,7 +159,6 @@
                     android:id="@+id/rvLetters"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
                     android:padding="8dp"
                     android:elevation="2dp"
                     android:clipToPadding="false" />
@@ -191,7 +190,6 @@
                     android:id="@+id/rvObjects"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
                     android:padding="8dp"
                     android:elevation="2dp"
                     android:clipToPadding="false" />

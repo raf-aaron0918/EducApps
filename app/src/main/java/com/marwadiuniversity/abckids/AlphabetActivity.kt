@@ -1,6 +1,5 @@
 package com.marwadiuniversity.abckids
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.graphics.Color
@@ -50,29 +49,29 @@ class AlphabetActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestu
         AlphabetItem("A", "Apple", R.drawable.a, "#FF6B6B", "#FF8E53"),
         AlphabetItem("B", "Ball", R.drawable.b, "#4ECDC4", "#556270"),
         AlphabetItem("C", "Cat", R.drawable.c, "#45B7D1", "#5AD2F4"),
-        AlphabetItem("D", "Dog", R.drawable.d, "#96CEB4", "#FFEEAD"),
-        AlphabetItem("E", "Eagle", R.drawable.e, "#FFEAA7", "#FFC371"),
-        AlphabetItem("F", "Fish", R.drawable.f, "#DDA0DD", "#BA55D3"),
-        AlphabetItem("G", "Giraffe", R.drawable.g, "#98D8C8", "#6FC9C6"),
-        AlphabetItem("H", "Horse", R.drawable.h, "#F7DC6F", "#F5B041"),
-        AlphabetItem("I", "Ice Cream", R.drawable.i, "#BB8FCE", "#8E44AD"),
-        AlphabetItem("J", "Jet", R.drawable.j, "#85C1E9", "#3498DB"),
-        AlphabetItem("K", "Kite", R.drawable.k, "#F8C471", "#F39C12"),
-        AlphabetItem("L", "Lion", R.drawable.l, "#F1948A", "#E74C3C"),
-        AlphabetItem("M", "Monkey", R.drawable.m, "#82E0AA", "#27AE60"),
-        AlphabetItem("N", "Nest", R.drawable.n, "#D2B4DE", "#9B59B6"),
-        AlphabetItem("O", "Orange", R.drawable.o, "#F9E79F", "#F39C12"),
-        AlphabetItem("P", "Parrot", R.drawable.p, "#AED6F1", "#5DADE2"),
-        AlphabetItem("Q", "Queen", R.drawable.q, "#F5B7B1", "#EC7063"),
-        AlphabetItem("R", "Rabbit", R.drawable.r, "#A9DFBF", "#2ECC71"),
-        AlphabetItem("S", "Sunflower", R.drawable.s, "#F9E79F", "#F1C40F"),
-        AlphabetItem("T", "Tiger", R.drawable.t, "#FADBD8", "#E74C3C"),
-        AlphabetItem("U", "Umbrella", R.drawable.u, "#D5A6BD", "#AF7AC5"),
-        AlphabetItem("V", "Vegetables", R.drawable.v, "#AED6F1", "#2980B9"),
-        AlphabetItem("W", "Wolf", R.drawable.w, "#A3E4D7", "#16A085"),
-        AlphabetItem("X", "Xylophone", R.drawable.x, "#F8D7DA", "#E57373"),
-        AlphabetItem("Y", "Yacht", R.drawable.y, "#CCE5FF", "#3498DB"),
-        AlphabetItem("Z", "Zebra", R.drawable.z, "#E8F5E8", "#2ECC71")
+        AlphabetItem("D", "Dog", R.drawable.letter_d, "#96CEB4", "#FFEEAD"),
+        AlphabetItem("E", "Eagle", R.drawable.letter_e, "#FFEAA7", "#FFC371"),
+        AlphabetItem("F", "Fish", R.drawable.letter_f, "#DDA0DD", "#BA55D3"),
+        AlphabetItem("G", "Giraffe", R.drawable.letter_g, "#98D8C8", "#6FC9C6"),
+        AlphabetItem("H", "Horse", R.drawable.letter_h, "#F7DC6F", "#F5B041"),
+        AlphabetItem("I", "Ice Cream", R.drawable.letter_i, "#BB8FCE", "#8E44AD"),
+        AlphabetItem("J", "Jet", R.drawable.letter_j, "#85C1E9", "#3498DB"),
+        AlphabetItem("K", "Kite", R.drawable.letter_k, "#F8C471", "#F39C12"),
+        AlphabetItem("L", "Lion", R.drawable.letter_l, "#F1948A", "#E74C3C"),
+        AlphabetItem("M", "Monkey", R.drawable.letter_m, "#82E0AA", "#27AE60"),
+        AlphabetItem("N", "Nest", R.drawable.letter_n, "#D2B4DE", "#9B59B6"),
+        AlphabetItem("O", "Orange", R.drawable.letter_o, "#F9E79F", "#F39C12"),
+        AlphabetItem("P", "Parrot", R.drawable.letter_p, "#AED6F1", "#5DADE2"),
+        AlphabetItem("Q", "Queen", R.drawable.letter_q, "#F5B7B1", "#EC7063"),
+        AlphabetItem("R", "Rabbit", R.drawable.letter_r, "#A9DFBF", "#2ECC71"),
+        AlphabetItem("S", "Sunflower", R.drawable.letter_s, "#F9E79F", "#F1C40F"),
+        AlphabetItem("T", "Tiger", R.drawable.letter_t, "#FADBD8", "#E74C3C"),
+        AlphabetItem("U", "Umbrella", R.drawable.letter_u, "#D5A6BD", "#AF7AC5"),
+        AlphabetItem("V", "Vegetables", R.drawable.letter_v, "#AED6F1", "#2980B9"),
+        AlphabetItem("W", "Wolf", R.drawable.letter_w, "#A3E4D7", "#16A085"),
+        AlphabetItem("X", "Xylophone", R.drawable.letter_x, "#F8D7DA", "#E57373"),
+        AlphabetItem("Y", "Yacht", R.drawable.letter_y, "#CCE5FF", "#3498DB"),
+        AlphabetItem("Z", "Zebra", R.drawable.letter_z, "#E8F5E8", "#2ECC71")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -295,24 +294,13 @@ class AlphabetActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestu
             }
             .start()
 
-        // Glow animation
+        // Keep the shared picture visible behind the alphabet card.
         createBackgroundGlow(currentItem)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun createBackgroundGlow(currentItem: AlphabetItem) {
-        val originalColor = Color.parseColor("#F0F4F8")
-        val startColor = Color.parseColor(currentItem.startColor)
-        val endColor = Color.parseColor(currentItem.endColor)
-        val avgColor = Color.rgb(
-            (Color.red(startColor) + Color.red(endColor)) / 2,
-            (Color.green(startColor) + Color.green(endColor)) / 2,
-            (Color.blue(startColor) + Color.blue(endColor)) / 2
-        )
-        val glowColor = Color.argb(80, Color.red(avgColor), Color.green(avgColor), Color.blue(avgColor))
-        val animator = ValueAnimator.ofArgb(originalColor, glowColor, originalColor)
-        animator.duration = 1200
-        animator.addUpdateListener { backgroundLayout.setBackgroundColor(it.animatedValue as Int) }
-        animator.start()
+        backgroundLayout.setBackgroundResource(R.drawable.background)
     }
 
     private fun speakAlphabet(item: AlphabetItem) {

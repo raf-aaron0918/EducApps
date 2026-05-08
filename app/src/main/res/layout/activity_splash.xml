@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
 
     <!-- Background Image (Rainbow with Giraffe) -->
     <ImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/splash_gradient"
+        android:src="@drawable/background"
         android:scaleType="centerCrop" />
 
     <!-- Semi-transparent overlay for better text readability -->

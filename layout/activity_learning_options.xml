@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#D4EEEC">
+    android:background="@drawable/background">
 
     <!-- Header with back button -->
     <LinearLayout
@@ -61,7 +61,6 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="@color/colorPhonics"
                 android:padding="20dp">
 
                 <ImageView
@@ -99,7 +98,6 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="@color/colorMemory"
                 android:padding="20dp">
 
                 <ImageView

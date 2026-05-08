@@ -76,6 +76,12 @@
 
         <!-- Game Activities -->
         <activity
+            android:name=".AnimalGamesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
+
+        <activity
             android:name=".GameActivity"
             android:exported="false"
             android:screenOrientation="portrait"

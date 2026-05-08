@@ -279,6 +279,7 @@ class ArtActivity : AppCompatActivity() {
         setupColorPalette()
         setupBrushControls()
         animateInterface()
+        drawingView.setColor(colors.first())
 
         // Enable glitter mode by default for draw mode
         if (artMode == "DRAW") {
@@ -390,12 +391,12 @@ class ArtActivity : AppCompatActivity() {
 
         if (isCurrentlyErasing) {
             drawingView.setEraserMode(false)
-            eraseButton.setBackgroundColor(Color.GRAY)
-            eraseButton.text = "🗑️ Erase"
+            applyToolButtonStyle(eraseButton, selected = false)
+            eraseButton.text = "Erase"
         } else {
             drawingView.setEraserMode(true)
-            eraseButton.setBackgroundColor(Color.parseColor("#87CEEB"))
-            eraseButton.text = "✏️ Draw"
+            applyToolButtonStyle(eraseButton, selected = true)
+            eraseButton.text = "Draw"
         }
 
         val pulseAnimation = AnimationHelper1.pulseAnimation(this)
@@ -413,11 +414,11 @@ class ArtActivity : AppCompatActivity() {
 
     private fun updateGlitterButton() {
         if (isGlitterMode) {
-            glitterButton.setBackgroundColor(Color.parseColor("#FFD700")) // Gold
-            glitterButton.text = "✨ Glitter ON"
+            applyToolButtonStyle(glitterButton, selected = true)
+            glitterButton.text = "On"
         } else {
-            glitterButton.setBackgroundColor(Color.GRAY)
-            glitterButton.text = "✨ Glitter OFF"
+            applyToolButtonStyle(glitterButton, selected = false)
+            glitterButton.text = "Glitter"
         }
     }
 
@@ -535,8 +536,8 @@ class ArtActivity : AppCompatActivity() {
     }
 
     private fun applyColorSwatch(button: Button, color: Int, selected: Boolean) {
-        val strokeColor = if (selected) Color.WHITE else Color.parseColor("#66000000")
-        val strokeWidth = if (selected) dpToPx(2) else dpToPx(1)
+        val strokeColor = if (selected) Color.parseColor("#111827") else Color.parseColor("#33000000")
+        val strokeWidth = if (selected) dpToPx(3) else dpToPx(1)
         val swatch = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
             setColor(color)
@@ -548,5 +549,23 @@ class ArtActivity : AppCompatActivity() {
         button.minWidth = 0
         button.minHeight = 0
         button.setPadding(0, 0, 0, 0)
+    }
+
+    private fun applyToolButtonStyle(button: Button, selected: Boolean) {
+        val background = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dpToPx(8).toFloat()
+            setColor(if (selected) Color.parseColor("#FF14B8A6") else Color.WHITE)
+            if (!selected) {
+                setStroke(dpToPx(1), Color.parseColor("#33111827"))
+            }
+        }
+        button.backgroundTintList = null
+        button.background = background
+        button.setTextColor(if (selected) Color.WHITE else Color.parseColor("#FF1F2937"))
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
     }
 }

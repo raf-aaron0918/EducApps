@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             R.id.card_alphabets to Triple(AlphabetActivity::class.java, "Alphabets", "Alphabets"),
             R.id.card_numbers to Triple(NumbersActivity::class.java, "Numbers", "Numbers"),
             R.id.card_art to Triple(ArtModeSelectionActivity::class.java, "Art", "Art"),
-            R.id.card_music to Triple(MusicSelectionActivity::class.java, "Music", "Music"),
+            R.id.card_music to Triple(MusicSelectionActivity::class.java, "Instrument", "Instrument"),
             R.id.card_shapes to Triple(ShapesColorsActivity::class.java, "Shapes & Colors", "Shapes and Colors"),
             R.id.card_games to Triple(GameActivity::class.java, "Games", "Games"),
-            R.id.card_youtube to Triple(YouTubeActivity::class.java, "Videos", "Videos"),
+            R.id.card_practice to Triple(LearningOptionsActivity::class.java, "Practice", "Practice"),
             R.id.card_learning to Triple(LearningActivity::class.java, "Learning", "Learning")
         )
     }
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun updateSoundIcon(iconTextView: TextView, isSoundOn: Boolean) {
-        iconTextView.text = if (isSoundOn) "🔊" else "🔇"
+        iconTextView.text = if (isSoundOn) "On" else "Off"
     }
 
     private fun showContactUsDialog() {

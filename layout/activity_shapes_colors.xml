@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#E8F8F5">
+    android:background="@drawable/background">
 
     <!-- Header -->
     <LinearLayout
@@ -125,7 +125,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="16dp"
-        android:background="#E8F8F5">
+        android:background="@drawable/background">
 
         <GridLayout
             android:id="@+id/content_container"
