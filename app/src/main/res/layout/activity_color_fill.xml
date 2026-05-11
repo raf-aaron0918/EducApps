@@ -5,50 +5,52 @@
     android:background="@drawable/background">
 
     <!-- Header -->
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@drawable/header_gradient"
-        android:padding="16dp"
-        android:elevation="8dp">
+        android:background="@drawable/toolbar_modern"
+        android:gravity="center_vertical"
+        android:minHeight="64dp"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_back"
-            android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/quiz_surface_bg"
+            android:elevation="4dp"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:src="@drawable/ic_back" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:text="Color Fill"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:letterSpacing="-0.03"
             android:fontFamily="sans-serif-medium"
-            android:shadowColor="#80000000"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="4" />
+            android:gravity="center_vertical" />
 
         <ImageView
             android:id="@+id/btn_save"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:src="@drawable/ic_save"
-            android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless" />
-    </RelativeLayout>
+            android:padding="9dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Save artwork" />
+    </LinearLayout>
 
     <!-- Template Selection Screen -->
     <LinearLayout
@@ -114,7 +116,7 @@
             android:id="@+id/bottom_controls"
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:background="@drawable/panel_background"
+            android:background="@drawable/rounded_white_bg"
             android:orientation="vertical"
             android:padding="8dp">
 
@@ -133,7 +135,7 @@
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/clear_button_background"
-                    android:text="🖼️ Change Template"
+                    android:text="Change Template"
                     android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:letterSpacing="-0.02" />
@@ -145,7 +147,7 @@
                     android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/clear_button_background"
-                    android:text="🗑️ Clear"
+                    android:text="Clear"
                     android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:letterSpacing="-0.02" />

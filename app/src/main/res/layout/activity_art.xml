@@ -22,7 +22,8 @@
             android:id="@+id/btn_back"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/quiz_surface_bg"
+            android:elevation="4dp"
             android:contentDescription="Back"
             android:padding="10dp"
             android:src="@drawable/ic_back" />
@@ -142,43 +143,37 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <HorizontalScrollView
+        <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:scrollbars="none">
+            android:alignmentMode="alignBounds"
+            android:columnCount="11"
+            android:rowCount="2"
+            android:useDefaultMargins="false">
 
-            <GridLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:alignmentMode="alignBounds"
-                android:columnCount="22"
-                android:rowCount="1"
-                android:useDefaultMargins="false">
-
-                <Button android:id="@+id/color_red" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_blue" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_green" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_yellow" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_purple" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_orange" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_pink" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_cyan" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_black" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_white" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_gray" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_magenta" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_brown" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_gold" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_spring_green" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_deep_pink" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_royal_blue" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_tomato" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_dark_orchid" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_lime_green" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_hot_pink" style="@style/ColorSwatchButton" />
-                <Button android:id="@+id/color_dark_turquoise" style="@style/ColorSwatchButton" />
-            </GridLayout>
-        </HorizontalScrollView>
+            <Button android:id="@+id/color_red" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_blue" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_green" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_yellow" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_purple" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_orange" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_pink" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_cyan" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_black" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_white" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_gray" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_magenta" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_brown" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_gold" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_spring_green" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_deep_pink" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_royal_blue" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_tomato" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_dark_orchid" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_lime_green" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_hot_pink" style="@style/ColorSwatchButton" />
+            <Button android:id="@+id/color_dark_turquoise" style="@style/ColorSwatchButton" />
+        </GridLayout>
     </LinearLayout>
 </LinearLayout>

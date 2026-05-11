@@ -3,15 +3,15 @@ package com.marwadiuniversity.abckids
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 
 class ArtModeSelectionActivity : AppCompatActivity() {
 
-    private var drawModeButton: Button? = null
-    private var colorFillModeButton: Button? = null
+    private var drawModeButton: CardView? = null
+    private var colorFillModeButton: CardView? = null
     private var backButton: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,7 @@ class ArtModeSelectionActivity : AppCompatActivity() {
                     val intent = Intent(this, ArtActivity::class.java)
                     intent.putExtra("ART_MODE", "DRAW")
                     startActivity(intent)
-                    animateButton(it as Button)
+                    animateButton(it)
                 } catch (e: Exception) {
                     Log.e("ArtModeSelection", "Error starting ArtActivity: ${e.message}", e)
                     Toast.makeText(this, "Cannot open drawing mode", Toast.LENGTH_SHORT).show()
@@ -72,7 +72,7 @@ class ArtModeSelectionActivity : AppCompatActivity() {
                 try {
                     val intent = Intent(this, ColorFillActivity::class.java)
                     startActivity(intent)
-                    animateButton(it as Button)
+                    animateButton(it)
                 } catch (e: Exception) {
                     Log.e("ArtModeSelection", "Error starting ColorFillActivity: ${e.message}", e)
                     Toast.makeText(this, "Cannot open color fill mode", Toast.LENGTH_SHORT).show()
@@ -122,7 +122,7 @@ class ArtModeSelectionActivity : AppCompatActivity() {
         }
     }
 
-    private fun animateButton(view: Button) {
+    private fun animateButton(view: android.view.View) {
         try {
             val scaleAnimation = android.view.animation.ScaleAnimation(
                 1f, 1.2f,

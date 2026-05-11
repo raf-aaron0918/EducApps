@@ -16,6 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.marwadiuniversity.abckids.adapters.CardMatchingAdapter
 
 class CardMatchingActivity : AppCompatActivity(), CardMatchingAdapter.OnCardInteractionListener {
+    private fun drawableNameForLetter(letter: Char): String {
+        val key = letter.lowercaseChar()
+        return when (key) {
+            'a', 'b', 'c' -> key.toString()
+            else -> "letter_$key"
+        }
+    }
 
     private lateinit var tvScore: TextView
     private lateinit var tvLevel: TextView
@@ -128,7 +135,7 @@ class CardMatchingActivity : AppCompatActivity(), CardMatchingAdapter.OnCardInte
 
         for ((index, letter) in selectedLetters.withIndex()) {
             val pairId = index + 1
-            val drawableName = letter.toString()
+            val drawableName = drawableNameForLetter(letter)
 
             // Create pair of cards
             allCards.add(MatchingCard(
@@ -274,7 +281,7 @@ class CardMatchingActivity : AppCompatActivity(), CardMatchingAdapter.OnCardInte
             playLevelCompleteSound()
             Toast.makeText(
                 this,
-                "🎉 Level $currentLevel Complete! Success rate: $successRate%",
+                "Level $currentLevel Complete! Success rate: $successRate%",
                 Toast.LENGTH_LONG
             ).show()
             btnNextLevel.visibility = View.VISIBLE
@@ -287,7 +294,7 @@ class CardMatchingActivity : AppCompatActivity(), CardMatchingAdapter.OnCardInte
         playGameCompleteSound()
         Toast.makeText(
             this,
-            "🎉 Congratulations! You completed all levels!",
+            "Congratulations! You completed all levels!",
             Toast.LENGTH_LONG
         ).show()
 
@@ -311,3 +318,4 @@ class CardMatchingActivity : AppCompatActivity(), CardMatchingAdapter.OnCardInte
         val pairs: Int
     )
 }
+

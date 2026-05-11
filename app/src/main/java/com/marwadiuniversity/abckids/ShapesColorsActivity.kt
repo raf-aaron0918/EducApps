@@ -92,16 +92,8 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun setupBeautifulBackground() {
-        // Create a beautiful gradient background compatible with teal header
-        val gradientDrawable = GradientDrawable().apply {
-            colors = intArrayOf(
-                Color.parseColor("#E8F8F5"), // Very light mint - complements teal header
-                Color.parseColor("#A7E6D7"), // Soft aqua
-                Color.parseColor("#52D4A3")  // Medium mint green
-            )
-            orientation = GradientDrawable.Orientation.TOP_BOTTOM
-        }
-        mainScrollView.background = gradientDrawable
+        // Keep only one background layer from XML root.
+        mainScrollView.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun initViews() {
@@ -177,14 +169,14 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             tabShapes.background = shapesGradient
             tabColors.background = colorsGradient
-            progressText.text = "✨ Learning Shapes! ✨"
+            progressText.text = "Learning Shapes"
         } else {
             val shapesGradient = createBeautifulGradient("#F5F5F5", "#EEEEEE")
             val colorsGradient = createBeautifulGradient("#FF9800", "#FFB74D")
 
             tabShapes.background = shapesGradient
             tabColors.background = colorsGradient
-            progressText.text = "🌈 Learning Colors! 🌈"
+            progressText.text = "Learning Colors"
         }
 
         // Animate tab change with glow effect
@@ -297,7 +289,7 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val card = CardView(this).apply {
             radius = 28f
             cardElevation = 16f
-            setCardBackgroundColor(Color.WHITE)
+            setCardBackgroundColor(Color.parseColor("#99FFFFFF"))
             useCompatPadding = true
         }
 
@@ -507,7 +499,7 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val card = CardView(this).apply {
             radius = 28f
             cardElevation = 16f
-            setCardBackgroundColor(Color.WHITE)
+            setCardBackgroundColor(Color.parseColor("#99FFFFFF"))
             useCompatPadding = true
         }
 
@@ -536,14 +528,6 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             gravity = Gravity.CENTER
         }
 
-        val emojiView = TextView(this).apply {
-            text = colorItem.emoji
-            textSize = 42f
-            gravity = Gravity.CENTER
-            // Add emoji glow effect
-            setShadowLayer(8f, 0f, 0f, Color.WHITE)
-        }
-
         val nameText = TextView(this).apply {
             text = colorItem.name
             textSize = 18f
@@ -564,9 +548,7 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { topMargin = 8 }
-        }
-
-        colorView.addView(emojiView)
+        }
         colorContainer.addView(colorView)
         layout.addView(colorContainer)
         layout.addView(nameText)
@@ -574,7 +556,7 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         card.addView(layout)
 
         card.setOnClickListener {
-            animateBeautifulColorClick(colorContainer, emojiView, colorItem)
+            animateBeautifulColorClick(colorContainer, colorItem)
             animateCardClick(card, colorItem.primaryColor)
             speakText("${colorItem.name} color. ${colorItem.description}")
         }
@@ -592,28 +574,23 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun animateBeautifulColorClick(colorContainer: CardView, emojiView: TextView, colorItem: ColorItem) {
+    private fun animateBeautifulColorClick(colorContainer: CardView, colorItem: ColorItem) {
         val animatorSet = AnimatorSet()
 
         // Enhanced bounce animation
         val bounceScaleX = ObjectAnimator.ofFloat(colorContainer, "scaleX", 1f, 1.5f, 0.9f, 1f)
         val bounceScaleY = ObjectAnimator.ofFloat(colorContainer, "scaleY", 1f, 1.5f, 0.9f, 1f)
-        val spin = ObjectAnimator.ofFloat(emojiView, "rotation", 0f, 720f, -45f, 0f) // Double spin
-
-        // Add bounce to emoji
-        val emojiJump = ObjectAnimator.ofFloat(emojiView, "translationY", 0f, -30f, 10f, 0f)
+        val spin = ObjectAnimator.ofFloat(colorContainer, "rotation", 0f, 8f, -8f, 0f)
 
         bounceScaleX.duration = 800
         bounceScaleY.duration = 800
-        spin.duration = 1000
-        emojiJump.duration = 600
+        spin.duration = 600
 
         bounceScaleX.interpolator = BounceInterpolator()
         bounceScaleY.interpolator = BounceInterpolator()
         spin.interpolator = OvershootInterpolator()
-        emojiJump.interpolator = BounceInterpolator()
 
-        animatorSet.playTogether(bounceScaleX, bounceScaleY, spin, emojiJump)
+        animatorSet.playTogether(bounceScaleX, bounceScaleY, spin)
         animatorSet.start()
 
         // Add sparkle effect to color cards too
@@ -652,8 +629,7 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         upSet.start()
         mainHandler.postDelayed({ downSet.start() }, 200)
-
-        createBeautifulBackgroundFlash(colorHex)
+        // Keep page background consistent; no color flash on tap.
     }
 
     private fun createBeautifulBackgroundFlash(colorHex: String) {

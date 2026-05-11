@@ -18,15 +18,18 @@ import com.marwadiuniversity.abckids.data.GameData
 import com.marwadiuniversity.abckids.data.QuizQuestion
 import com.marwadiuniversity.abckids.utils.AnimationHelper
 import com.marwadiuniversity.abckids.utils.SoundManager
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
 
 class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var questionText: TextView
     private lateinit var animalEmoji: TextView
+    private lateinit var quizScoreText: TextView
+    private lateinit var quizHighScoreText: TextView
+    private lateinit var quizWrongLeftText: TextView
     private lateinit var answerButtons: Array<Button>
     private lateinit var soundManager: SoundManager
+
     private var textToSpeech: TextToSpeech? = null
     private var isTTSReady = false
     private var isCurrentlySpeaking = false
@@ -34,36 +37,41 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private var currentQuestionIndex = 0
     private var score = 0
-    // Create a shuffled copy of questions
+    private var wrongAttempts = 0
+    private var highScore = 0
     private val questions = ArrayList<QuizQuestion>()
 
-    // Animal sound mapping
     private val animalSounds = mapOf(
-        "🐶" to R.raw.dog_sound,      // Dog bark
-        "🐱" to R.raw.cat_sound,      // Cat meow
-        "🐮" to R.raw.cow_sound,      // Cow moo
-        "🐷" to R.raw.pig_sound,      // Pig oink
-        "🐴" to R.raw.horse_sound,    // Horse neigh
-        "🐑" to R.raw.sheep_sound,    // Sheep baa
-        "🐸" to R.raw.frog_sound,     // Frog croak
-        "🐘" to R.raw.elephant_sound, // Elephant trumpet
-        "🦁" to R.raw.lion_sound,     // Lion roar
-        "🐯" to R.raw.tiger_sound,    // Tiger roar
-        "🐻" to R.raw.bear_sound,     // Bear growl
-        "🐵" to R.raw.monkey_sound,   // Monkey chatter
-        "🐔" to R.raw.chicken_sound,  // Chicken cluck
-        "🐦" to R.raw.bird_sound,     // Bird chirp
-        "🦆" to R.raw.duck_sound,     // Duck quack
-        "🐺" to R.raw.wolf_sound,     // Wolf howl
-        "🦅" to R.raw.eagle_sound,    // Eagle screech
-        "🐙" to R.raw.generic_sound,  // Octopus (generic)
-        "🐧" to R.raw.penguin_sound,  // Penguin call
-        "🦉" to R.raw.owl_sound       // Owl hoot
+        "\uD83D\uDC36" to R.raw.dog_sound,
+        "\uD83D\uDC31" to R.raw.cat_sound,
+        "\uD83D\uDC2E" to R.raw.cow_sound,
+        "\uD83D\uDC37" to R.raw.pig_sound,
+        "\uD83D\uDC34" to R.raw.horse_sound,
+        "\uD83D\uDC11" to R.raw.sheep_sound,
+        "\uD83D\uDC38" to R.raw.frog_sound,
+        "\uD83D\uDC18" to R.raw.elephant_sound,
+        "\uD83E\uDD81" to R.raw.lion_sound,
+        "\uD83D\uDC2F" to R.raw.tiger_sound,
+        "\uD83D\uDC3B" to R.raw.bear_sound,
+        "\uD83D\uDC35" to R.raw.monkey_sound,
+        "\uD83D\uDC14" to R.raw.chicken_sound,
+        "\uD83D\uDC26" to R.raw.bird_sound,
+        "\uD83E\uDD86" to R.raw.duck_sound,
+        "\uD83D\uDC3A" to R.raw.wolf_sound,
+        "\uD83E\uDD85" to R.raw.eagle_sound,
+        "\uD83D\uDC19" to R.raw.generic_sound,
+        "\uD83D\uDC27" to R.raw.penguin_sound,
+        "\uD83E\uDD89" to R.raw.owl_sound
     )
+
     companion object {
-        private const val NEXT_QUESTION_DELAY = 5000L // Increased for animal sound
-        private const val ANIMAL_SOUND_DELAY = 1000L
+        private const val NEXT_QUESTION_DELAY_CORRECT = 1200L
+        private const val NEXT_QUESTION_DELAY_WRONG = 1000L
+        private const val ANIMAL_SOUND_DELAY = 250L
+        private const val MAX_WRONG_ATTEMPTS = 10
         private const val TTS_TAG = "GameTTS"
+        private const val PREFS_NAME = "animal_quiz_prefs"
+        private const val PREF_HIGH_SCORE = "high_score"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,58 +81,26 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         initializeViews()
         initializeTextToSpeech()
         setupToolbar()
-        shuffleQuestions() // Shuffle questions before starting
+        shuffleQuestions()
         loadQuestion()
     }
 
-    private fun shuffleQuestions() {
-        try {
-            // Create a copy of the original questions and shuffle them
-            questions.clear()
-
-            // Create new QuizQuestion objects with shuffled options
-            val shuffledQuestions = GameData.animalQuestions.map { originalQuestion ->
-                val correctAnswer = originalQuestion.correctAnswer
-                val optionsList = originalQuestion.options.toMutableList()
-                optionsList.shuffle()
-
-                // Create a new QuizQuestion with shuffled options
-                QuizQuestion(
-                    emoji = originalQuestion.emoji,
-                    correctAnswer = correctAnswer,
-                    options = optionsList // Keep as List<String>
-                )
-            }.toMutableList()
-
-            // Shuffle the order of questions
-            shuffledQuestions.shuffle()
-
-            questions.addAll(shuffledQuestions)
-
-            Log.d(TTS_TAG, "Questions shuffled successfully. Total questions: ${questions.size}")
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error shuffling questions: ${e.message}")
-            // Fallback to original questions if shuffling fails
-            questions.clear()
-            questions.addAll(GameData.animalQuestions)
-        }
-    }
-
     private fun initializeViews() {
-        try {
-            questionText = findViewById(R.id.question_text)
-            animalEmoji = findViewById(R.id.animal_emoji)
-            answerButtons = arrayOf(
-                findViewById(R.id.answer_btn_1),
-                findViewById(R.id.answer_btn_2),
-                findViewById(R.id.answer_btn_3),
-                findViewById(R.id.answer_btn_4)
-            )
-            soundManager = SoundManager(this)
-            setupAnswerButtons()
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error initializing views: ${e.message}")
-        }
+        questionText = findViewById(R.id.question_text)
+        animalEmoji = findViewById(R.id.animal_emoji)
+        quizScoreText = findViewById(R.id.quiz_score_text)
+        quizHighScoreText = findViewById(R.id.quiz_high_score_text)
+        quizWrongLeftText = findViewById(R.id.quiz_wrong_left_text)
+        answerButtons = arrayOf(
+            findViewById(R.id.answer_btn_1),
+            findViewById(R.id.answer_btn_2),
+            findViewById(R.id.answer_btn_3),
+            findViewById(R.id.answer_btn_4)
+        )
+        soundManager = SoundManager(this)
+        highScore = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).getInt(PREF_HIGH_SCORE, 0)
+        updateQuizStatsUI()
+        setupAnswerButtons()
     }
 
     private fun initializeTextToSpeech() {
@@ -136,194 +112,194 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     override fun onInit(status: Int) {
-        if (status == TextToSpeech.SUCCESS) {
-            textToSpeech?.let { tts ->
-                try {
-                    // Try different languages for better compatibility
-                    var result = tts.setLanguage(Locale.US)
-                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        result = tts.setLanguage(Locale.UK)
-                        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                            result = tts.setLanguage(Locale.getDefault())
-                        }
-                    }
-
-                    if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
-                        // Configure for stable, clear speech - reduced pitch to prevent cracking
-                        tts.setSpeechRate(0.7f) // Slower for clarity
-                        tts.setPitch(1.0f) // Normal pitch to prevent distortion
-
-                        // Set up listener to track speech state
-                        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                            override fun onStart(utteranceId: String?) {
-                                isCurrentlySpeaking = true
-                                Log.d(TTS_TAG, "Speech started: $utteranceId")
-                            }
-
-                            override fun onDone(utteranceId: String?) {
-                                isCurrentlySpeaking = false
-                                Log.d(TTS_TAG, "Speech completed: $utteranceId")
-                            }
-
-                            override fun onError(utteranceId: String?) {
-                                isCurrentlySpeaking = false
-                                Log.e(TTS_TAG, "Speech error: $utteranceId")
-                            }
-                        })
-
-                        isTTSReady = true
-                        Log.d(TTS_TAG, "TTS initialized successfully")
-
-                    } else {
-                        Log.w(TTS_TAG, "Language not supported")
-                    }
-                } catch (e: Exception) {
-                    Log.e(TTS_TAG, "Error configuring TTS: ${e.message}")
+        if (status != TextToSpeech.SUCCESS) return
+        textToSpeech?.let { tts ->
+            try {
+                var result = tts.setLanguage(Locale.US)
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    result = tts.setLanguage(Locale.getDefault())
                 }
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) return
+                tts.setSpeechRate(0.8f)
+                tts.setPitch(1.0f)
+                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) { isCurrentlySpeaking = true }
+                    override fun onDone(utteranceId: String?) { isCurrentlySpeaking = false }
+                    override fun onError(utteranceId: String?) { isCurrentlySpeaking = false }
+                })
+                isTTSReady = true
+            } catch (e: Exception) {
+                Log.e(TTS_TAG, "Error configuring TTS: ${e.message}")
             }
-        } else {
-            Log.e(TTS_TAG, "TTS initialization failed with status: $status")
         }
     }
 
     private fun setupToolbar() {
-        try {
-            findViewById<View>(R.id.btn_back)?.setOnClickListener {
-                stopSpeaking()
-                stopAnimalSound()
-                finish()
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error setting up toolbar: ${e.message}")
+        findViewById<View>(R.id.btn_back).setOnClickListener {
+            stopSpeaking()
+            stopAnimalSound()
+            finish()
         }
     }
 
     private fun setupAnswerButtons() {
-        try {
-            answerButtons.forEachIndexed { index, button ->
-                button.setOnClickListener { checkAnswer(index) }
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error setting up answer buttons: ${e.message}")
+        answerButtons.forEachIndexed { index, button ->
+            button.setOnClickListener { checkAnswer(index) }
         }
     }
 
+    private fun shuffleQuestions() {
+        questions.clear()
+        val shuffledQuestions = GameData.animalQuestions.map { originalQuestion ->
+            val optionsList = originalQuestion.options.toMutableList()
+            optionsList.shuffle()
+            QuizQuestion(
+                emoji = originalQuestion.emoji,
+                correctAnswer = originalQuestion.correctAnswer,
+                options = optionsList
+            )
+        }.toMutableList()
+        shuffledQuestions.shuffle()
+        questions.addAll(shuffledQuestions)
+    }
+
     private fun loadQuestion() {
-        try {
-            if (currentQuestionIndex < questions.size) {
-                val currentQuestion = questions[currentQuestionIndex]
-                displayQuestion(currentQuestion)
-            } else {
-                showFinalScore()
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error loading question: ${e.message}")
+        if (wrongAttempts >= MAX_WRONG_ATTEMPTS) {
+            showGameOver()
+            return
+        }
+        if (currentQuestionIndex < questions.size) {
+            displayQuestion(questions[currentQuestionIndex])
+        } else {
+            showFinalScore()
         }
     }
 
     private fun displayQuestion(question: QuizQuestion) {
-        try {
-            animalEmoji.text = question.emoji
-
-            val bounceAnimation = AnimationHelper.bounceAnimation(this)
-            animalEmoji.startAnimation(bounceAnimation)
-
-            answerButtons.forEachIndexed { index, button ->
-                button.apply {
-                    text = question.options[index]
-                    isEnabled = true
-                    visibility = View.VISIBLE
-                    background = ContextCompat.getDrawable(this@GameActivity, R.drawable.button_default)
-                    setTextColor(ContextCompat.getColor(this@GameActivity, R.color.text_primary))
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error displaying question: ${e.message}")
+        animalEmoji.text = question.emoji
+        animalEmoji.startAnimation(AnimationHelper.bounceAnimation(this))
+        answerButtons.forEachIndexed { index, button ->
+            button.text = question.options[index]
+            button.isEnabled = true
+            button.visibility = View.VISIBLE
+            button.background = ContextCompat.getDrawable(this, R.drawable.quiz_answer_button)
+            button.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
         }
     }
 
     private fun checkAnswer(selectedIndex: Int) {
-        try {
-            val currentQuestion = questions[currentQuestionIndex]
-            val correctIndex = currentQuestion.options.indexOf(currentQuestion.correctAnswer)
-            val isCorrect = selectedIndex == correctIndex
+        val currentQuestion = questions[currentQuestionIndex]
+        val correctIndex = currentQuestion.options.indexOf(currentQuestion.correctAnswer)
+        val isCorrect = selectedIndex == correctIndex
 
-            answerButtons.forEach { it.isEnabled = false }
+        answerButtons.forEach { it.isEnabled = false }
+        handleAnswerResult(selectedIndex, correctIndex, isCorrect, currentQuestion.emoji)
 
-            handleAnswerResult(selectedIndex, correctIndex, isCorrect, currentQuestion.emoji)
+        if (!isCorrect && wrongAttempts >= MAX_WRONG_ATTEMPTS) {
+            Handler(Looper.getMainLooper()).postDelayed({ showGameOver() }, NEXT_QUESTION_DELAY_WRONG)
+            return
+        }
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                currentQuestionIndex++
-                loadQuestion()
-            }, NEXT_QUESTION_DELAY)
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error checking answer: ${e.message}")
+        val delay = if (isCorrect) NEXT_QUESTION_DELAY_CORRECT else NEXT_QUESTION_DELAY_WRONG
+        Handler(Looper.getMainLooper()).postDelayed({
+            currentQuestionIndex++
+            loadQuestion()
+        }, delay)
+    }
+
+    private fun handleAnswerResult(selectedIndex: Int, correctIndex: Int, isCorrect: Boolean, emoji: String) {
+        if (isCorrect) {
+            score++
+            updateHighScoreIfNeeded()
+            updateQuizStatsUI()
+            showCorrectAnswer(selectedIndex)
+            playSuccessSound()
+            Handler(Looper.getMainLooper()).postDelayed({ playAnimalSound(emoji) }, ANIMAL_SOUND_DELAY)
+        } else {
+            wrongAttempts++
+            score--
+            updateQuizStatsUI()
+            showIncorrectAnswer(selectedIndex, correctIndex)
+            playErrorSound()
+            val incorrectMessages = arrayOf("Try again!", "Oops! Wrong answer!", "Not quite right!", "Good try!", "Keep trying!")
+            speakText(incorrectMessages.random())
         }
     }
 
-    private fun handleAnswerResult(selectedIndex: Int, correctIndex: Int, isCorrect: Boolean, animalEmoji: String) {
-        try {
-            if (isCorrect) {
-                score++
-                showCorrectAnswer(selectedIndex)
-                playSuccessSound()
+    private fun showCorrectAnswer(index: Int) {
+        answerButtons[index].background = ContextCompat.getDrawable(this, R.drawable.button_correct)
+        answerButtons[index].setTextColor(Color.WHITE)
+        answerButtons[index].startAnimation(AnimationHelper.correctPulseAnimation(this))
+    }
 
-                // Play animal sound after a short delay
-                Handler(Looper.getMainLooper()).postDelayed({
-                    playAnimalSound(animalEmoji)
-                }, ANIMAL_SOUND_DELAY)
+    private fun showIncorrectAnswer(selected: Int, correct: Int) {
+        answerButtons[selected].background = ContextCompat.getDrawable(this, R.drawable.button_incorrect)
+        answerButtons[selected].setTextColor(Color.WHITE)
+        answerButtons[selected].startAnimation(AnimationHelper.incorrectShakeAnimation(this))
+        answerButtons[correct].background = ContextCompat.getDrawable(this, R.drawable.button_correct)
+        answerButtons[correct].setTextColor(Color.WHITE)
+    }
 
-            } else {
-                showIncorrectAnswer(selectedIndex, correctIndex)
+    private fun showFinalScore() {
+        updateHighScoreIfNeeded()
+        questionText.text = "Quiz Complete!"
+        animalEmoji.text = "\uD83C\uDFC6"
+        animalEmoji.startAnimation(AnimationHelper.bounceAnimation(this))
+        answerButtons.forEach { it.visibility = View.GONE }
 
-                // Use TTS for incorrect answers instead of sound file
-                val incorrectMessages = arrayOf(
-                    "Try again!",
-                    "Oops! Wrong answer!",
-                    "Not quite right!",
-                    "Good try!",
-                    "Keep trying!"
-                )
-                speakText(incorrectMessages.random())
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error handling answer result: ${e.message}")
+        val finalMessage = when {
+            score == questions.size -> "Perfect score! Amazing work!"
+            score >= questions.size * 0.8 -> "Excellent job! You did great!"
+            score >= questions.size * 0.6 -> "Good work! Keep practicing!"
+            else -> "Nice try! Practice makes perfect!"
+        }
+        Toast.makeText(this, "Final Score: $score/${questions.size}  High Score: $highScore", Toast.LENGTH_LONG).show()
+        speakText(finalMessage)
+    }
+
+    private fun showGameOver() {
+        updateHighScoreIfNeeded()
+        questionText.text = "Game Over"
+        animalEmoji.text = "\uD83D\uDE35"
+        animalEmoji.startAnimation(AnimationHelper.incorrectShakeAnimation(this))
+        answerButtons.forEach { it.visibility = View.GONE }
+        Toast.makeText(this, "Game Over. Final Score: $score  High Score: $highScore", Toast.LENGTH_LONG).show()
+        speakText("Game over. Your final score is $score")
+    }
+
+    private fun updateQuizStatsUI() {
+        quizScoreText.text = "Score: $score"
+        quizHighScoreText.text = "High: $highScore"
+        val livesLeft = (MAX_WRONG_ATTEMPTS - wrongAttempts).coerceAtLeast(0)
+        quizWrongLeftText.text = "Lives: $livesLeft"
+    }
+
+    private fun updateHighScoreIfNeeded() {
+        if (score > highScore) {
+            highScore = score
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putInt(PREF_HIGH_SCORE, highScore)
+                .apply()
         }
     }
 
-    private fun playAnimalSound(animalEmoji: String) {
+    private fun playAnimalSound(emoji: String) {
         try {
-            val soundResourceId = animalSounds[animalEmoji]
-            if (soundResourceId != null) {
-                // Stop any currently playing animal sound
-                stopAnimalSound()
-
-                animalSoundPlayer = MediaPlayer.create(this, soundResourceId)
-                animalSoundPlayer?.let { player ->
-                    player.start()
-                    Log.d(TTS_TAG, "Playing animal sound for: $animalEmoji")
-
-                    // Stop after fixed duration (3 sec)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        stopAnimalSound()
-                    }, 3000L)
-                }
-            } else {
-                Log.w(TTS_TAG, "No sound found for animal: $animalEmoji")
-                playSuccessSound()
-            }
+            val soundResourceId = animalSounds[emoji] ?: R.raw.generic_sound
+            stopAnimalSound()
+            animalSoundPlayer = MediaPlayer.create(this, soundResourceId)
+            animalSoundPlayer?.start()
+            Handler(Looper.getMainLooper()).postDelayed({ stopAnimalSound() }, 1800L)
         } catch (e: Exception) {
             Log.e(TTS_TAG, "Error playing animal sound: ${e.message}")
-            playSuccessSound()
         }
     }
 
     private fun stopAnimalSound() {
         try {
             animalSoundPlayer?.let { player ->
-                if (player.isPlaying) {
-                    player.stop()
-                }
+                if (player.isPlaying) player.stop()
                 player.release()
             }
             animalSoundPlayer = null
@@ -332,88 +308,14 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun showCorrectAnswer(index: Int) {
-        try {
-            answerButtons[index].apply {
-                background = ContextCompat.getDrawable(this@GameActivity, R.drawable.button_correct)
-                setTextColor(Color.WHITE)
-                startAnimation(AnimationHelper.correctPulseAnimation(this@GameActivity))
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error showing correct answer: ${e.message}")
-        }
-    }
-
-    private fun showIncorrectAnswer(selected: Int, correct: Int) {
-        try {
-            answerButtons[selected].apply {
-                background = ContextCompat.getDrawable(this@GameActivity, R.drawable.button_incorrect)
-                setTextColor(Color.WHITE)
-                startAnimation(AnimationHelper.incorrectShakeAnimation(this@GameActivity))
-            }
-
-            answerButtons[correct].apply {
-                background = ContextCompat.getDrawable(this@GameActivity, R.drawable.button_correct)
-                setTextColor(Color.WHITE)
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error showing incorrect answer: ${e.message}")
-        }
-    }
-
-    private fun showFinalScore() {
-        try {
-            questionText.text = "Quiz Complete!"
-            animalEmoji.text = "🏆"
-            animalEmoji.startAnimation(AnimationHelper.bounceAnimation(this))
-
-            answerButtons.forEach { it.visibility = View.GONE }
-
-            // Final TTS message and toast - only at quiz completion
-            val finalMessage = when {
-                score == questions.size -> "Perfect score! Amazing work!"
-                score >= questions.size * 0.8 -> "Excellent job! You did great!"
-                score >= questions.size * 0.6 -> "Good work! Keep practicing!"
-                else -> "Nice try! Practice makes perfect!"
-            }
-
-            // Show toast with final score
-            Toast.makeText(this, "Final Score: $score/${questions.size} - $finalMessage", Toast.LENGTH_LONG).show()
-
-            // Speak the final message
-            Log.d(TTS_TAG, "Speaking final message: $finalMessage")
-            speakText(finalMessage)
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error showing final score: ${e.message}")
-        }
-    }
-
     private fun speakText(text: String) {
-        if (!isTTSReady || textToSpeech == null) {
-            Log.w(TTS_TAG, "TTS not ready")
-            return
-        }
-
+        if (!isTTSReady || textToSpeech == null) return
         try {
-            textToSpeech?.let { tts ->
-                // Stop current speech to prevent overlapping
-                if (isCurrentlySpeaking) {
-                    tts.stop()
-                }
-
-                // Create parameters for better speech quality
-                val params = Bundle()
-                params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "GameTTS")
-                params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 1.0f)
-
-                val result = tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, "GameTTS")
-
-                if (result == TextToSpeech.ERROR) {
-                    Log.e(TTS_TAG, "Error speaking text: $text")
-                } else {
-                    Log.d(TTS_TAG, "Speaking: $text")
-                }
-            }
+            val tts = textToSpeech ?: return
+            if (isCurrentlySpeaking) tts.stop()
+            val params = Bundle()
+            params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "GameTTS")
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, "GameTTS")
         } catch (e: Exception) {
             Log.e(TTS_TAG, "Exception while speaking: ${e.message}")
         }
@@ -430,9 +332,7 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun playSuccessSound() {
         try {
-            if (::soundManager.isInitialized) {
-                soundManager.playSuccessSound()
-            }
+            soundManager.playSuccessSound()
         } catch (e: Exception) {
             Log.e(TTS_TAG, "Error playing success sound: ${e.message}")
         }
@@ -440,40 +340,25 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun playErrorSound() {
         try {
-            if (::soundManager.isInitialized) {
-                soundManager.playErrorSound() // This will now play incorrect_sound.mp3
-            }
+            soundManager.playErrorSound()
         } catch (e: Exception) {
             Log.e(TTS_TAG, "Error playing error sound: ${e.message}")
         }
     }
 
     override fun onPause() {
-        try {
-            stopSpeaking()
-            stopAnimalSound()
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error in onPause: ${e.message}")
-        }
+        stopSpeaking()
+        stopAnimalSound()
         super.onPause()
     }
 
     override fun onDestroy() {
-        try {
-            stopSpeaking()
-            stopAnimalSound()
-            textToSpeech?.let { tts ->
-                tts.shutdown()
-            }
-            textToSpeech = null
-            isTTSReady = false
-
-            if (::soundManager.isInitialized) {
-                soundManager.release()
-            }
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error in onDestroy: ${e.message}")
-        }
+        stopSpeaking()
+        stopAnimalSound()
+        textToSpeech?.shutdown()
+        textToSpeech = null
+        isTTSReady = false
+        soundManager.release()
         super.onDestroy()
     }
 }

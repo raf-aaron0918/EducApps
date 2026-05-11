@@ -5,114 +5,162 @@
     android:orientation="vertical"
     android:background="@drawable/background">
 
-    <!-- Header with Gradient Background -->
+    <!-- Modern Header with Purple Gradient -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/header_gradient"
+        android:background="@drawable/game_card_memory_bg"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="16dp">
+        android:padding="14dp"
+        android:elevation="6dp">
 
-        <!-- Back Button -->
         <ImageView
             android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_back"
             android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:background="@drawable/quiz_surface_bg" />
 
-        <!-- Header Title -->
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Memory Card Matching"
+            android:text="Memory Cards"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="#FFFFFFFF"
             android:gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="48dp" />
+            android:fontFamily="sans-serif-black"
+            android:layout_marginEnd="40dp" />
 
     </LinearLayout>
 
-    <!-- Content Area -->
+    <!-- Stats Panel -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/quiz_surface_bg"
+        android:elevation="3dp">
 
-        <TextView
-            android:id="@+id/tvLevel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Level 1"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="#FF9800"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/tvScore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pairs Found: 0/4 | Attempts: 0"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:background="@drawable/rounded_background"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tap cards to flip them and find matching pairs!"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Cards Grid -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCards"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Control Buttons -->
+        <!-- Level Chip -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/game_card_memory_bg"
+            android:padding="10dp"
+            android:layout_marginEnd="6dp">
 
-            <Button
-                android:id="@+id/btnRestart"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvLevel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Restart Level"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/button_background"
-                android:textColor="@android:color/white" />
+                android:text="Level 1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFFFF"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black" />
 
-            <Button
-                android:id="@+id/btnNextLevel"
-                android:layout_width="0dp"
+        </LinearLayout>
+
+        <!-- Pairs Chip -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/quiz_surface_bg"
+            android:padding="8dp"
+            android:layout_marginEnd="6dp">
+
+            <TextView
+                android:id="@+id/tvScore"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Next Level"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/button_background"
-                android:textColor="@android:color/white"
-                android:visibility="gone" />
+                android:text="Pairs: 0/4 | Tries: 0"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#FF6C63FF"
+                android:gravity="center" />
 
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Instruction -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tap cards to flip and find matching pairs!"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="#FF44A1F6"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_white_bg"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:elevation="2dp" />
+
+    <!-- Cards Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCards"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="4dp">
+
+        <Button
+            android:id="@+id/btnRestart"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Restart"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/memory_btn_restart"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnNextLevel"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Next Level â–¶"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/memory_btn_next"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
 </LinearLayout>
+

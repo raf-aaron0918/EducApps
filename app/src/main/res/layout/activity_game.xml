@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
-    <!-- Background Image -->
-    <ImageView
-        android:id="@+id/background_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/background"
-        android:scaleType="centerCrop"
-        android:alpha="0.7" />
-
-    <!-- Foreground Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@android:color/transparent">
+        android:padding="12dp">
 
-        <!-- Header -->
+        <!-- Modern Header Bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="16dp"
-            android:background="@drawable/header_gradient">
+            android:padding="12dp"
+            android:background="@drawable/quiz_surface_bg"
+            android:elevation="4dp">
 
             <ImageView
                 android:id="@+id/btn_back"
@@ -36,40 +26,96 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_back"
                 android:padding="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless" />
+                android:background="@android:color/transparent" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Animal Quiz"
-                android:textSize="24sp"
-                android:textColor="@color/white"
-                android:fontFamily="sans-serif"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FF2D0C6E"
                 android:gravity="center"
-                android:textStyle="bold" />
+                android:fontFamily="sans-serif-black" />
 
-            <!-- Added Restart Button for Memory Game -->
             <ImageView
                 android:id="@+id/restart_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@android:drawable/ic_menu_rotate"
                 android:padding="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
                 android:visibility="gone" />
 
         </LinearLayout>
 
-        <!-- Memory Game Stats (Hidden by default) -->
+        <!-- Quiz Stats Row -->
+        <LinearLayout
+            android:id="@+id/quiz_stats_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/quiz_score_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Score: 0"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#FF0F766E"
+                android:gravity="center"
+                android:padding="10dp"
+                android:background="@drawable/quiz_surface_bg"
+                android:elevation="2dp" />
+
+            <TextView
+                android:id="@+id/quiz_high_score_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Best: 0"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#FF7C3AED"
+                android:gravity="center"
+                android:padding="10dp"
+                android:background="@drawable/quiz_surface_bg"
+                android:elevation="2dp" />
+
+            <TextView
+                android:id="@+id/quiz_wrong_left_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Lives: 10"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#FFB91C1C"
+                android:gravity="center"
+                android:padding="10dp"
+                android:background="@drawable/quiz_surface_bg"
+                android:elevation="2dp" />
+
+        </LinearLayout>
+
+        <!-- Memory Stats Row (hidden by default) -->
         <LinearLayout
             android:id="@+id/memory_stats_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="16dp"
-            android:background="#80FFFFFF"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/quiz_surface_bg"
+            android:padding="10dp"
+            android:elevation="2dp"
             android:visibility="gone">
 
             <TextView
@@ -78,15 +124,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Score: 0"
-                android:textSize="16sp"
-                android:textColor="#1976D2"
-                android:fontFamily="sans-serif-medium"
+                android:textSize="15sp"
+                android:textColor="#FF1976D2"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:background="@drawable/rounded_white_bg"
-                android:layout_marginEnd="8dp"
-                android:elevation="4dp" />
+                android:layout_marginEnd="8dp" />
 
             <TextView
                 android:id="@+id/moves_text"
@@ -94,57 +138,55 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Moves: 0"
-                android:textSize="16sp"
-                android:textColor="#F57C00"
-                android:fontFamily="sans-serif-medium"
+                android:textSize="15sp"
+                android:textColor="#FFF57C00"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:background="@drawable/rounded_white_bg"
-                android:layout_marginStart="8dp"
-                android:elevation="4dp" />
+                android:layout_marginStart="8dp" />
 
         </LinearLayout>
 
-        <!-- Game Content -->
+        <!-- Main Content Card -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center"
-            android:padding="24dp">
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:padding="14dp"
+            android:background="@drawable/quiz_surface_bg"
+            android:elevation="4dp">
 
-            <!-- Question Text with solid background -->
+            <!-- Question Text -->
             <TextView
                 android:id="@+id/question_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="What animal is this?"
-                android:textSize="26sp"
-                android:textColor="#000000"
-                android:fontFamily="sans-serif"
-                android:layout_marginBottom="32dp"
+                android:textSize="19sp"
+                android:textColor="#FFFFFFFF"
+                android:fontFamily="sans-serif-black"
                 android:gravity="center"
-                android:padding="16dp"
-                android:background="@drawable/rounded_white_bg"
-                android:textStyle="bold"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:elevation="4dp" />
+                android:padding="12dp"
+                android:background="@drawable/game_card_phonics_bg"
+                android:layout_marginBottom="12dp" />
 
-            <!-- Animal Emoji with white background -->
+            <!-- Animal Emoji Display -->
             <TextView
                 android:id="@+id/animal_emoji"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:text="🐘"
-                android:textSize="80sp"
-                android:layout_marginBottom="48dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:text="ðŸ˜"
+                android:textSize="76sp"
                 android:gravity="center"
-                android:background="@drawable/rounded_white_bg"
-                android:elevation="4dp" />
+                android:background="@drawable/quiz_surface_bg"
+                android:elevation="8dp"
+                android:layout_marginBottom="12dp" />
 
-            <!-- Memory Game Grid (Hidden by default) -->
+            <!-- Memory Game Grid -->
             <ScrollView
                 android:id="@+id/memory_game_container"
                 android:layout_width="match_parent"
@@ -167,7 +209,6 @@
                         android:useDefaultMargins="true" />
 
                 </LinearLayout>
-
             </ScrollView>
 
             <!-- Answer Buttons -->
@@ -176,79 +217,55 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginTop="8dp">
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/answer_btn_1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Option 1"
+                    android:textColor="#FF0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quiz_answer_button" />
 
-                    <Button
-                        android:id="@+id/answer_btn_1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="Option 1"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:background="@drawable/rounded_white_bg"
-                        android:elevation="4dp" />
-
-                    <Button
-                        android:id="@+id/answer_btn_2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="Option 2"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:background="@drawable/rounded_white_bg"
-                        android:elevation="4dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <Button
+                    android:id="@+id/answer_btn_2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Option 2"
+                    android:textColor="#FF0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quiz_answer_button" />
 
-                    <Button
-                        android:id="@+id/answer_btn_3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="Option 3"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:background="@drawable/rounded_white_bg"
-                        android:elevation="4dp" />
+                <Button
+                    android:id="@+id/answer_btn_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Option 3"
+                    android:textColor="#FF0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quiz_answer_button" />
 
-                    <Button
-                        android:id="@+id/answer_btn_4"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="Option 4"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:background="@drawable/rounded_white_bg"
-                        android:elevation="4dp" />
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/answer_btn_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Option 4"
+                    android:textColor="#FF0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/quiz_answer_button" />
 
             </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>
-
 </FrameLayout>
+

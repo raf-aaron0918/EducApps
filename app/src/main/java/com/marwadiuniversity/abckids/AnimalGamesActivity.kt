@@ -31,6 +31,7 @@ class AnimalGamesActivity : AppCompatActivity() {
         findViewById<CardView>(R.id.card_memory_cards).setOnClickListener {
             startActivity(Intent(this, CardMatchingActivity::class.java))
         }
+
     }
 
     private fun setupBackButton() {

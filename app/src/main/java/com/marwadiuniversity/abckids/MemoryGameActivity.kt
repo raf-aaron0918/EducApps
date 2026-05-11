@@ -1,4 +1,4 @@
-package com.marwadiuniversity.abckids
+﻿package com.marwadiuniversity.abckids
 
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.marwadiuniversity.abckids.utils.AnimationHelper
 import com.marwadiuniversity.abckids.utils.SoundManager
+import android.graphics.Color
 import java.util.*
 
 class MemoryGameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -29,22 +30,24 @@ class MemoryGameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var score = 0
 
     private val emojis = mutableListOf(
-        "🐶", "🐱", "🐰", "🐸", "🦁", "🐘", "🐵", "🐧",
-        "🐶", "🐱", "🐰", "🐸", "🦁", "🐘", "🐵", "🐧"
+        "\uD83D\uDC36", "\uD83D\uDC31", "\uD83D\uDC30", "\uD83D\uDC38",
+        "\uD83E\uDD81", "\uD83D\uDC18", "\uD83D\uDC35", "\uD83D\uDC27",
+        "\uD83D\uDC36", "\uD83D\uDC31", "\uD83D\uDC30", "\uD83D\uDC38",
+        "\uD83E\uDD81", "\uD83D\uDC18", "\uD83D\uDC35", "\uD83D\uDC27"
     ).apply { shuffle() }
 
     private val cardStates = MutableList(16) { CardState.HIDDEN }
 
     // Animal names for TTS
     private val animalNames = mapOf(
-        "🐶" to "Dog",
-        "🐱" to "Cat",
-        "🐰" to "Rabbit",
-        "🐸" to "Frog",
-        "🦁" to "Lion",
-        "🐘" to "Elephant",
-        "🐵" to "Monkey",
-        "🐧" to "Penguin"
+        "\uD83D\uDC36" to "Dog",
+        "\uD83D\uDC31" to "Cat",
+        "\uD83D\uDC30" to "Rabbit",
+        "\uD83D\uDC38" to "Frog",
+        "\uD83E\uDD81" to "Lion",
+        "\uD83D\uDC18" to "Elephant",
+        "\uD83D\uDC35" to "Monkey",
+        "\uD83D\uDC27" to "Penguin"
     )
 
     private enum class CardState {
@@ -137,7 +140,7 @@ class MemoryGameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
             radius = 16f
             cardElevation = 8f
-            setCardBackgroundColor(ContextCompat.getColor(this@MemoryGameActivity, android.R.color.white))
+            setCardBackgroundColor(Color.parseColor("#B3FFFFFF"))
         }
 
         val textView = TextView(this).apply {

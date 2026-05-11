@@ -36,12 +36,12 @@ class CardMatchingAdapter(
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val cardView: CardView = itemView.findViewById(R.id.cardMemory)
-        private val ivCardFront: ImageView = itemView.findViewById(R.id.ivCardFront)
-        private val ivCardBack: ImageView = itemView.findViewById(R.id.ivCardBack)
+        private val layoutCardFront: View = itemView.findViewById(R.id.ivCardFront)
+        private val ivCardFrontImage: ImageView = itemView.findViewById(R.id.ivCardFrontImage)
+        private val layoutCardBack: View = itemView.findViewById(R.id.ivCardBack)
 
         fun bind(card: MatchingCard, position: Int) {
             if (card.isEmpty) {
-                // Empty slot - make it invisible
                 itemView.visibility = View.INVISIBLE
                 return
             }
@@ -49,50 +49,38 @@ class CardMatchingAdapter(
             itemView.visibility = View.VISIBLE
 
             // Adjust card size for level 3
+            val layoutParams = itemView.layoutParams
             if (currentLevel == 3) {
-                val layoutParams = itemView.layoutParams
-                layoutParams.height = dpToPx(85) // Smaller height for level 3
-                itemView.layoutParams = layoutParams
-
-                // Adjust margins for level 3
+                layoutParams.height = dpToPx(90)
                 if (layoutParams is ViewGroup.MarginLayoutParams) {
                     val smallMargin = dpToPx(4)
                     layoutParams.setMargins(smallMargin, smallMargin, smallMargin, smallMargin)
                 }
             } else {
-                val layoutParams = itemView.layoutParams
-                layoutParams.height = dpToPx(120) // Normal height for level 1 & 2
-                itemView.layoutParams = layoutParams
-
-                // Normal margins for level 1 & 2
+                layoutParams.height = dpToPx(110)
                 if (layoutParams is ViewGroup.MarginLayoutParams) {
-                    val normalMargin = dpToPx(8)
+                    val normalMargin = dpToPx(6)
                     layoutParams.setMargins(normalMargin, normalMargin, normalMargin, normalMargin)
                 }
             }
+            itemView.layoutParams = layoutParams
 
             // Show front or back based on card state
             if (card.isFlipped || card.isMatched) {
-                ivCardFront.visibility = View.VISIBLE
-                ivCardBack.visibility = View.GONE
+                layoutCardFront.visibility = View.VISIBLE
+                layoutCardBack.visibility = View.GONE
 
                 // Load card image safely
-                setCardImage(itemView.context, card.imageResource, ivCardFront)
+                setCardImage(itemView.context, card.imageResource, ivCardFrontImage)
             } else {
-                ivCardFront.visibility = View.GONE
-                ivCardBack.visibility = View.VISIBLE
-                // Set the card back color directly
-                ivCardBack.setBackgroundColor(Color.parseColor("#FF48C9B0"))
+                layoutCardFront.visibility = View.GONE
+                layoutCardBack.visibility = View.VISIBLE
             }
 
             // Change appearance for matched cards
             if (card.isMatched) {
-                // Beautiful green gradient for matched cards
-                cardView.setCardBackgroundColor(Color.parseColor("#4CAF50"))
-                cardView.alpha = 0.9f
+                cardView.alpha = 0.6f
             } else {
-                // Beautiful white background for normal cards
-                cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
                 cardView.alpha = 1.0f
             }
 

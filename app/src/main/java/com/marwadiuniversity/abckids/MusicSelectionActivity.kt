@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -24,13 +25,13 @@ class MusicSelectionActivity : AppCompatActivity() {
     private lateinit var instrumentContainer: RelativeLayout
 
     private val instruments = listOf(
-        InstrumentData("🎹", "Piano", "#4FC3F7", "#0288D1", PianoActivity::class.java),
-        InstrumentData("🎶", "Flute", "#81C784", "#388E3C", FluteActivity::class.java),
-        InstrumentData("🎵", "Harmonica", "#FF8A80", "#FF5252", HarmonicaActivity::class.java)
+        InstrumentData(R.drawable.piano_icon, "Piano", "#4FC3F7", "#0288D1", PianoActivity::class.java),
+        InstrumentData(R.drawable.flute_icon, "Flute", "#81C784", "#388E3C", FluteActivity::class.java),
+        InstrumentData(R.drawable.harmonica_icon, "Harmonica", "#FF8A80", "#FF5252", HarmonicaActivity::class.java)
     )
 
     data class InstrumentData(
-        val emoji: String,
+        val iconResId: Int,
         val name: String,
         val primaryColor: String,
         val secondaryColor: String,
@@ -52,7 +53,7 @@ class MusicSelectionActivity : AppCompatActivity() {
                 RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT
             )
-            background = createCompatibleGradientBackground()
+            setBackgroundResource(R.drawable.background)
         }
 
         addFloatingInstrumentEmojis(mainLayout)
@@ -83,35 +84,32 @@ class MusicSelectionActivity : AppCompatActivity() {
                 RelativeLayout.LayoutParams.WRAP_CONTENT
             )
             orientation = LinearLayout.HORIZONTAL
-            setPadding(30, 50, 30, 50)
+            setPadding(14, 12, 14, 6)
             gravity = android.view.Gravity.CENTER_VERTICAL
-            background = resources.getDrawable(R.drawable.header_gradient, null)
-            elevation = 8f
+            background = resources.getDrawable(android.R.color.transparent, null)
 
             backButton = ImageView(this@MusicSelectionActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(100, 100).apply {
-                    setMargins(0, 0, 25, 0)
+                layoutParams = LinearLayout.LayoutParams(44, 44).apply {
+                    setMargins(0, 0, 12, 0)
                 }
                 setImageResource(R.drawable.ic_back)
-                setPadding(12, 12, 12, 12)
-
-                val outValue = android.util.TypedValue()
-                theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true)
-                setBackgroundResource(outValue.resourceId)
+                setPadding(10, 10, 10, 10)
+                setBackgroundResource(R.drawable.quiz_surface_bg)
+                elevation = 4f
+                contentDescription = "Back"
             }
             addView(backButton)
 
-            val titleText = TextView(this@MusicSelectionActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                text = "Musical Instruments"
-                textSize = 26f
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = Typeface.DEFAULT_BOLD
-                gravity = android.view.Gravity.CENTER
-                setShadowLayer(4f, 2f, 2f, Color.parseColor("#80000000"))
-                letterSpacing = -0.03f
+            val titleImage = ImageView(this@MusicSelectionActivity).apply {
+                layoutParams = LinearLayout.LayoutParams(0, 190, 1f).apply {
+                    topMargin = 20
+                }
+                setImageResource(R.drawable.instrument_content)
+                adjustViewBounds = true
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                contentDescription = "Instrument"
             }
-            addView(titleText)
+            addView(titleImage)
         }
     }
 
@@ -163,16 +161,22 @@ class MusicSelectionActivity : AppCompatActivity() {
 
     private fun createLargeInstrumentButton(instrument: InstrumentData, size: Int): Button {
         return Button(this).apply {
-            text = "${instrument.emoji}\n\n${instrument.name}"
-            textSize = 16f
+            text = instrument.name
+            textSize = 17f
             setTextColor(Color.WHITE)
             typeface = Typeface.DEFAULT_BOLD
+            isAllCaps = false
+            gravity = android.view.Gravity.CENTER_HORIZONTAL or android.view.Gravity.CENTER_VERTICAL
             background = createEnhancedCircularBackground(instrument.primaryColor, instrument.secondaryColor)
             elevation = 28f
             setShadowLayer(16f, 8f, 8f, Color.parseColor("#60000000"))
-            setPadding(20, 25, 20, 25)
+            setPadding(20, 24, 20, 28)
+            maxLines = 1
             layoutParams = RelativeLayout.LayoutParams(size, size)
-
+            val icon: Drawable? = resources.getDrawable(instrument.iconResId, null)
+            icon?.setBounds(0, 0, 220, 220)
+            setCompoundDrawables(null, icon, null, null)
+            compoundDrawablePadding = 10
             startPulsingAnimation()
 
             setOnClickListener {
@@ -321,17 +325,6 @@ class MusicSelectionActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({ animator.start() }, (0..3000).random().toLong())
     }
 
-    private fun createCompatibleGradientBackground(): GradientDrawable {
-        return GradientDrawable().apply {
-            orientation = GradientDrawable.Orientation.TL_BR
-            colors = intArrayOf(
-                Color.parseColor("#F5F0FF"), // Very light lavender - complements teal header nicely
-                Color.parseColor("#E8D5FF"), // Soft purple
-                Color.parseColor("#D4BFFF")  // Medium lavender - creates beautiful contrast with teal
-            )
-        }
-    }
-
     private fun createEnhancedCircularBackground(startColor: String, endColor: String): GradientDrawable {
         return GradientDrawable().apply {
             orientation = GradientDrawable.Orientation.TOP_BOTTOM
@@ -350,3 +343,4 @@ class MusicSelectionActivity : AppCompatActivity() {
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
     }
 }
+

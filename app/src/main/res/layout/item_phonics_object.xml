@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:layout_margin="4dp"
-    android:background="@android:color/white"
+    android:layout_margin="5dp"
+    android:background="@drawable/phonics_object_modern_bg"
     android:gravity="center"
     android:elevation="4dp">
 
     <ImageView
         android:id="@+id/ivImage"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:scaleType="centerInside"
         android:src="@android:drawable/ic_menu_gallery" />
 

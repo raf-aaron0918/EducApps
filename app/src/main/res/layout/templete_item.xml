@@ -8,11 +8,11 @@
 
     <ImageView
         android:id="@+id/template_image"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="210dp"
+        android:layout_height="210dp"
         android:layout_margin="4dp"
         android:scaleType="centerInside"
-        android:padding="8dp"
+        android:padding="6dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true" />

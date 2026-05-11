@@ -12,51 +12,53 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="16dp"
-        android:background="@drawable/header_gradient"
-        android:elevation="8dp">
+        android:paddingStart="16dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:background="@android:color/transparent">
 
         <!-- Updated Back Button -->
         <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:src="@drawable/ic_back"
-            android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:background="@drawable/quiz_surface_bg"
+            android:elevation="4dp"
             android:contentDescription="Back" />
 
-        <!-- Title Section -->
-        <LinearLayout
+        <Space
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginHorizontal="16dp">
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Shapes &amp; Colors!"
-                android:textSize="18sp"
-                android:textColor="#FFFFFF"
-                android:fontFamily="sans-serif-medium"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tap to learn!"
-                android:textSize="14sp"
-                android:textColor="#E0FFFFFF"
-                android:fontFamily="sans-serif"
-                android:layout_marginTop="2dp" />
-
-        </LinearLayout>
+        <Space
+            android:layout_width="44dp"
+            android:layout_height="44dp" />
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="260dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:contentDescription="Shapes"
+        android:scaleType="fitCenter"
+        android:src="@drawable/shapes_content" />
+
+    <TextView
+        android:id="@+id/progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:textSize="14sp"
+        android:textColor="#E0FFFFFF"
+        android:fontFamily="sans-serif"
+        android:layout_marginTop="2dp" />
 
     <!-- Tab Layout -->
     <LinearLayout
@@ -65,7 +67,7 @@
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center"
-        android:background="#FFFFFF"
+        android:background="@android:color/transparent"
         android:elevation="4dp">
 
         <androidx.cardview.widget.CardView
@@ -83,11 +85,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="✨ Shapes"
+                android:text="Shapes"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 android:fontFamily="sans-serif-medium" />
 
         </androidx.cardview.widget.CardView>
@@ -107,7 +109,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="🌈 Colors"
+                android:text="Colors"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"
@@ -125,7 +127,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="16dp"
-        android:background="@drawable/background">
+        android:background="@android:color/transparent">
 
         <GridLayout
             android:id="@+id/content_container"
@@ -144,7 +146,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:padding="16dp"
-        android:background="@drawable/header_gradient">
+        android:background="@android:color/transparent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -158,3 +160,4 @@
     </LinearLayout>
 
 </LinearLayout>
+

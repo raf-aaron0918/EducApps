@@ -18,7 +18,6 @@ import java.util.*
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var categoryGrid: GridLayout
-    private lateinit var menuIcon: TextView
     private var textToSpeech: TextToSpeech? = null
     private var isTTSReady = false
     private var mediaPlayer: MediaPlayer? = null
@@ -39,8 +38,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             R.id.card_music to Triple(MusicSelectionActivity::class.java, "Instrument", "Instrument"),
             R.id.card_shapes to Triple(ShapesColorsActivity::class.java, "Shapes & Colors", "Shapes and Colors"),
             R.id.card_games to Triple(AnimalGamesActivity::class.java, "Games", "Games"),
-            R.id.card_practice to Triple(LearningOptionsActivity::class.java, "Practice", "Practice"),
-            R.id.card_learning to Triple(LearningActivity::class.java, "Learning", "Learning")
+            R.id.card_learning to Triple(LearningActivity::class.java, "Video", "Video")
         )
     }
 
@@ -54,13 +52,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         initializeTextToSpeech()
         initializeBackgroundMusic()
         setupClickListeners()
-        setupMenuClick()
         animateCategories()
     }
 
     private fun initializeViews() {
         categoryGrid = findViewById(R.id.category_grid)
-        menuIcon = findViewById(R.id.menu_icon)
     }
 
     private fun initializeSharedPreferences() {
@@ -96,10 +92,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             e.printStackTrace()
             mediaPlayer = null
         }
-    }
-
-    private fun setupMenuClick() {
-        menuIcon.setOnClickListener { showMenuDialog() }
     }
 
     private fun showMenuDialog() {
@@ -271,6 +263,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     Toast.makeText(this, "Opening $moduleName...", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        findViewById<CardView>(R.id.card_settings)?.setOnClickListener { view ->
+            animateCardClick(view)
+            showMenuDialog()
         }
     }
 

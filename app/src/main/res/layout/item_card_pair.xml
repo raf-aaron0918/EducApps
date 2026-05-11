@@ -3,33 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardMemory"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
-    app:cardBackgroundColor="@android:color/white">
+    android:layout_height="100dp"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@android:color/transparent">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- Card Back (shown when not flipped) -->
-        <ImageView
+        <LinearLayout
             android:id="@+id/ivCardBack"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FF48C9B0"
-            android:scaleType="centerInside"
-            android:padding="12dp" />
+            android:background="@drawable/memory_card_back_modern"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="?"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFFFF"
+                android:fontFamily="sans-serif-black" />
+
+        </LinearLayout>
 
         <!-- Card Front (shown when flipped) -->
-        <ImageView
+        <LinearLayout
             android:id="@+id/ivCardFront"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:padding="12dp"
-            android:visibility="gone" />
+            android:background="#FFFFFFFF"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivCardFrontImage"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:scaleType="centerInside"
+                android:padding="4dp" />
+
+        </LinearLayout>
 
     </FrameLayout>
 

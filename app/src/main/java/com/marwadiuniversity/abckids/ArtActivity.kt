@@ -564,7 +564,6 @@ class ArtActivity : AppCompatActivity() {
         button.background = background
         button.setTextColor(if (selected) Color.WHITE else Color.parseColor("#FF1F2937"))
     }
-
     private fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
     }

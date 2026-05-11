@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.GestureDetectorCompat
 import java.util.*
 import kotlin.math.abs
@@ -263,12 +264,14 @@ class AlphabetActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestu
 
         letterText.text = currentItem.letter
         alphabetImage.setImageResource(currentItem.imageResId)
-        wordText.text = "for ${currentItem.word}"
+        wordText.text = currentItem.word
 
         // Unique gradient background
+        val startColor = ColorUtils.setAlphaComponent(Color.parseColor(currentItem.startColor), 204)
+        val endColor = ColorUtils.setAlphaComponent(Color.parseColor(currentItem.endColor), 204)
         val gradientDrawable = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
-            intArrayOf(Color.parseColor(currentItem.startColor), Color.parseColor(currentItem.endColor))
+            intArrayOf(startColor, endColor)
         )
         gradientDrawable.cornerRadius = 40f * resources.displayMetrics.density
         letterCard.background = gradientDrawable
@@ -300,7 +303,9 @@ class AlphabetActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestu
 
     @Suppress("UNUSED_PARAMETER")
     private fun createBackgroundGlow(currentItem: AlphabetItem) {
-        backgroundLayout.setBackgroundResource(R.drawable.background)
+        // Root layout already has the shared background. Avoid applying it again
+        // to the content area, which creates a duplicated/two-background effect.
+        backgroundLayout.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun speakAlphabet(item: AlphabetItem) {

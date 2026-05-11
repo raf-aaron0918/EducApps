@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background"
-    android:orientation="vertical">
+
+
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:layout_marginBottom="6dp" android:background="@drawable/main_topbar_glass" android:paddingStart="10dp" android:paddingEnd="10dp" android:paddingTop="6dp" android:paddingBottom="6dp">`n`n    <ImageView`n        android:id="@+id/main_logo"`n        android:layout_width="260dp"`n        android:layout_height="80dp"`n        android:adjustViewBounds="true"`n        android:contentDescription="FunLearn Kids"`n        android:scaleType="fitCenter"`n        android:src="@drawable/fun_learn_kids" />`n`n</LinearLayout>
 
     <LinearLayout
         android:id="@+id/header"
@@ -374,7 +371,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:fontFamily="sans-serif-medium"
-                            android:text="Learning"
+                            android:text="Video"
                             android:textColor="@color/text_primary"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -384,3 +381,4 @@
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+

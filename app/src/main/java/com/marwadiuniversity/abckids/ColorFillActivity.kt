@@ -923,10 +923,10 @@ class TemplateAdapter(
                 holder.itemView.context.resources,
                 templateResId,
                 BitmapFactory.Options().apply {
-                    inSampleSize = 4
+                    inSampleSize = 2
                     inPreferredConfig = Bitmap.Config.RGB_565
                 }
-            ) ?: TemplateSketchFactory.createTemplate(templateResId, 320, 320)
+            ) ?: TemplateSketchFactory.createTemplate(templateResId, 480, 480)
 
             val croppedHeight = (bitmap.height * 0.90).toInt()
             if (croppedHeight > 0 && croppedHeight <= bitmap.height) {
@@ -938,7 +938,7 @@ class TemplateAdapter(
             }
         } catch (e: Exception) {
             Log.e("TemplateAdapter", "Error loading template", e)
-            holder.templateImage.setImageBitmap(TemplateSketchFactory.createTemplate(templateResId, 320, 320))
+            holder.templateImage.setImageBitmap(TemplateSketchFactory.createTemplate(templateResId, 480, 480))
         }
 
         holder.templateImage.setOnClickListener {

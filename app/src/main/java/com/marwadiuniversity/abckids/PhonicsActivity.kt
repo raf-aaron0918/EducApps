@@ -12,8 +12,16 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.Locale
 
 class PhonicsActivity : AppCompatActivity() {
+    private fun drawableNameForLetter(letter: String): String {
+        val key = letter.lowercase(Locale.ROOT)
+        return when (key) {
+            "a", "b", "c" -> key
+            else -> "letter_$key"
+        }
+    }
 
     private lateinit var lettersRecyclerView: RecyclerView
     private lateinit var objectsRecyclerView: RecyclerView
@@ -187,7 +195,7 @@ class PhonicsActivity : AppCompatActivity() {
     private fun updateUI() {
         try {
             tvLevel.text = "Level $currentLevel/$totalLevels"
-            tvScore.text = "Score: $totalScore"
+            tvScore.text = "⭐ Score: $totalScore"
 
             val difficultyTexts = mapOf(
                 1 to "Easy: 5 Random Letters",
@@ -520,19 +528,20 @@ class PhonicsActivity : AppCompatActivity() {
 
                     when {
                         matchedLetters.contains(letter.letter) -> {
-                            itemView.setBackgroundColor(Color.parseColor("#4CAF50"))
+                            itemView.alpha = 0.4f
                             tvLetter.setTextColor(Color.WHITE)
-                            itemView.alpha = 0.8f
                         }
                         selectedLetterKey == letter.letter -> {
-                            itemView.setBackgroundColor(Color.parseColor("#2196F3"))
-                            tvLetter.setTextColor(Color.WHITE)
                             itemView.alpha = 1.0f
+                            itemView.scaleX = 1.05f
+                            itemView.scaleY = 1.05f
+                            tvLetter.setTextColor(Color.parseColor("#FFFFEB3B"))
                         }
                         else -> {
-                            itemView.setBackgroundColor(Color.parseColor("#E3F2FD"))
-                            tvLetter.setTextColor(Color.parseColor("#1976D2"))
                             itemView.alpha = 1.0f
+                            itemView.scaleX = 1.0f
+                            itemView.scaleY = 1.0f
+                            tvLetter.setTextColor(Color.WHITE)
                         }
                     }
 
@@ -590,20 +599,24 @@ class PhonicsActivity : AppCompatActivity() {
             fun bind(letter: PhonicsLetter, position: Int) {
                 try {
                     val imageResId = itemView.context.resources.getIdentifier(
-                        letter.letter.lowercase(), "drawable", itemView.context.packageName
+                        drawableNameForLetter(letter.letter), "drawable", itemView.context.packageName
                     )
 
+                    // Always provide a visible educational tile fallback (letter + word) for offline/missing assets.
+                    val fallbackBitmap = createPhonicsTileBitmap(letter)
                     if (imageResId != 0) {
-                        ivImage.setImageResource(imageResId)
+                        try {
+                            ivImage.setImageResource(imageResId)
+                        } catch (_: Exception) {
+                            ivImage.setImageBitmap(fallbackBitmap)
+                        }
                     } else {
-                        ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+                        ivImage.setImageBitmap(fallbackBitmap)
                     }
 
                     if (matchedLetters.contains(letter.letter)) {
-                        itemView.setBackgroundColor(Color.parseColor("#4CAF50"))
-                        itemView.alpha = 0.8f
+                        itemView.alpha = 0.4f
                     } else {
-                        itemView.setBackgroundColor(Color.parseColor("#FFF3E0"))
                         itemView.alpha = 1.0f
                     }
 
@@ -617,8 +630,6 @@ class PhonicsActivity : AppCompatActivity() {
                                 }
                                 DragEvent.ACTION_DRAG_ENTERED -> {
                                     if (!matchedLetters.contains(letter.letter)) {
-                                        view.setBackgroundColor(Color.parseColor("#FFEB3B"))
-                                        view.alpha = 0.8f
                                         view.scaleX = 1.1f
                                         view.scaleY = 1.1f
                                     }
@@ -626,8 +637,6 @@ class PhonicsActivity : AppCompatActivity() {
                                 }
                                 DragEvent.ACTION_DRAG_EXITED -> {
                                     if (!matchedLetters.contains(letter.letter)) {
-                                        view.setBackgroundColor(Color.parseColor("#FFF3E0"))
-                                        view.alpha = 1.0f
                                         view.scaleX = 1.0f
                                         view.scaleY = 1.0f
                                     }
@@ -655,21 +664,14 @@ class PhonicsActivity : AppCompatActivity() {
                                             }
                                         }
 
-                                        view.setBackgroundColor(Color.parseColor("#FFF3E0"))
-                                        view.alpha = 1.0f
                                         view.scaleX = 1.0f
                                         view.scaleY = 1.0f
                                     }
                                     true
                                 }
                                 DragEvent.ACTION_DRAG_ENDED -> {
-                                    if (!matchedLetters.contains(letter.letter)) {
-                                        view.setBackgroundColor(Color.parseColor("#FFF3E0"))
-                                        view.alpha = 1.0f
-                                    }
                                     view.scaleX = 1.0f
                                     view.scaleY = 1.0f
-
                                     isDragInProgress = false
                                     true
                                 }
@@ -685,8 +687,41 @@ class PhonicsActivity : AppCompatActivity() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    ivImage.setImageResource(android.R.drawable.ic_menu_gallery)
+                    ivImage.setImageBitmap(createPhonicsTileBitmap(letter))
                 }
+            }
+
+            private fun createPhonicsTileBitmap(letter: PhonicsLetter): Bitmap {
+                val size = 220
+                val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bmp)
+                val bg = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#FFF8E1")
+                    style = Paint.Style.FILL
+                }
+                val border = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#FFCC80")
+                    style = Paint.Style.STROKE
+                    strokeWidth = 6f
+                }
+                val letterPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#FF1565C0")
+                    textAlign = Paint.Align.CENTER
+                    textSize = 92f
+                    typeface = Typeface.DEFAULT_BOLD
+                }
+                val wordPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#FF5D4037")
+                    textAlign = Paint.Align.CENTER
+                    textSize = 26f
+                    typeface = Typeface.DEFAULT_BOLD
+                }
+
+                canvas.drawRoundRect(RectF(3f, 3f, size - 3f, size - 3f), 26f, 26f, bg)
+                canvas.drawRoundRect(RectF(3f, 3f, size - 3f, size - 3f), 26f, 26f, border)
+                canvas.drawText(letter.letter, size / 2f, 112f, letterPaint)
+                canvas.drawText(letter.word, size / 2f, 178f, wordPaint)
+                return bmp
             }
         }
     }
