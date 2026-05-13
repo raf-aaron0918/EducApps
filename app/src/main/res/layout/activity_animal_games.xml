@@ -90,7 +90,7 @@
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@drawable/animal_quiz_icon"
+                        android:src="@drawable/alphabets"
                         android:scaleType="centerCrop"
                         android:background="@drawable/quiz_surface_bg"
                         android:padding="3dp" />
@@ -105,7 +105,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Animal Quiz"
+                            android:text="A-Z Alphabet Quiz"
                             android:textSize="21sp"
                             android:textStyle="bold"
                             android:textColor="#FFFFFFFF"
@@ -114,7 +114,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Guess the animal!"
+                            android:text="Learn the alphabet from A to Z!"
                             android:textSize="13sp"
                             android:textColor="#E8FFFFFF"
                             android:layout_marginTop="3dp" />

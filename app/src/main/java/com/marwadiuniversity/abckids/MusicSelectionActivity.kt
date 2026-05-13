@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.Space
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.cos
@@ -43,8 +44,9 @@ class MusicSelectionActivity : AppCompatActivity() {
         setContentView(createMainLayout())
 
         setupBackButton()
-        createCircularInstrumentLayout()
-        animateInstrumentsEntrance()
+        createSimpleInstrumentLayout()
+
+
     }
 
     private fun createMainLayout(): View {
@@ -56,10 +58,11 @@ class MusicSelectionActivity : AppCompatActivity() {
             setBackgroundResource(R.drawable.background)
         }
 
-        addFloatingInstrumentEmojis(mainLayout)
+// Floating emojis removed (UI revert)
 
         val headerLayout = createHeader()
         mainLayout.addView(headerLayout)
+
 
         instrumentContainer = RelativeLayout(this).apply {
             id = View.generateViewId()
@@ -83,81 +86,106 @@ class MusicSelectionActivity : AppCompatActivity() {
                 RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
             )
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(14, 12, 14, 6)
-            gravity = android.view.Gravity.CENTER_VERTICAL
+            orientation = LinearLayout.VERTICAL
             background = resources.getDrawable(android.R.color.transparent, null)
 
+            val topRow = LinearLayout(this@MusicSelectionActivity).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(16, 14, 16, 8)
+                gravity = android.view.Gravity.CENTER_VERTICAL
+            }
+
             backButton = ImageView(this@MusicSelectionActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(44, 44).apply {
-                    setMargins(0, 0, 12, 0)
-                }
+                layoutParams = LinearLayout.LayoutParams(44, 44)
                 setImageResource(R.drawable.ic_back)
                 setPadding(10, 10, 10, 10)
                 setBackgroundResource(R.drawable.quiz_surface_bg)
                 elevation = 4f
                 contentDescription = "Back"
             }
-            addView(backButton)
+            topRow.addView(backButton)
+
+            val flexibleSpace = Space(this@MusicSelectionActivity).apply {
+                layoutParams = LinearLayout.LayoutParams(0, 1, 1f)
+            }
+            topRow.addView(flexibleSpace)
+
+            val fixedSpace = Space(this@MusicSelectionActivity).apply {
+                layoutParams = LinearLayout.LayoutParams(44, 44)
+            }
+            topRow.addView(fixedSpace)
+
+            addView(topRow)
 
             val titleImage = ImageView(this@MusicSelectionActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(0, 190, 1f).apply {
-                    topMargin = 20
+                layoutParams = LinearLayout.LayoutParams(260, 120).apply {
+                    gravity = android.view.Gravity.CENTER_HORIZONTAL
                 }
                 setImageResource(R.drawable.instrument_content)
                 adjustViewBounds = true
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                contentDescription = "Instrument"
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                contentDescription = "Instruments"
             }
             addView(titleImage)
         }
     }
 
-    private fun createCircularInstrumentLayout() {
+private fun createSimpleInstrumentLayout() {
         try {
-            val screenWidth = resources.displayMetrics.widthPixels
-            val screenHeight = resources.displayMetrics.heightPixels
+            instrumentContainer.removeAllViews()
 
-            val headerHeight = 150
-            val availableHeight = screenHeight - headerHeight
-
-            val centerX = screenWidth / 2
-            val centerY = headerHeight + (availableHeight / 2)
-
-            val maxRadius = Math.min(
-                (screenWidth - 120) / 2,
-                (availableHeight - 80) / 2
-            ).toFloat()
-            val radius = maxRadius * 0.95f
-
-            val buttonSize = Math.min(screenWidth / 2.5f, 380f).toInt()
-            val angleStep = 360f / instruments.size
-
-            instruments.forEachIndexed { index, instrument ->
-                val angle = Math.toRadians((index * angleStep - 90).toDouble())
-                val x = (centerX + radius * cos(angle)).toInt() - buttonSize / 2
-                val y = (centerY + radius * sin(angle)).toInt() - buttonSize / 2
-
-                val instrumentButton = createLargeInstrumentButton(instrument, buttonSize)
-
-                val safeMarginX = 15
-                val safeMarginY = 15
-                val params = RelativeLayout.LayoutParams(buttonSize, buttonSize).apply {
-                    leftMargin = Math.max(safeMarginX, Math.min(x, screenWidth - buttonSize - safeMarginX))
-                    topMargin = Math.max(safeMarginY, Math.min(y, screenHeight - buttonSize - safeMarginY))
-                }
-                instrumentButton.layoutParams = params
-
-                instrumentButton.alpha = 0f
-                instrumentButton.scaleX = 0f
-                instrumentButton.scaleY = 0f
-
-                instrumentContainer.addView(instrumentButton)
+            val verticalLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = android.view.Gravity.CENTER
+                layoutParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT
+                )
             }
+
+            instruments.forEach { instrument ->
+                val button = Button(this).apply {
+                    text = instrument.name
+                    textSize = 18f
+                    setTextColor(Color.WHITE)
+                    typeface = Typeface.DEFAULT_BOLD
+                    isAllCaps = false
+                    gravity = android.view.Gravity.CENTER
+                    background = createEnhancedCircularBackground(instrument.primaryColor, instrument.secondaryColor)
+                    elevation = 18f
+                    setShadowLayer(14f, 6f, 6f, Color.parseColor("#60000000"))
+                    setPadding(20, 24, 20, 24)
+                    setCompoundDrawables(null, null, null, null)
+
+                    setOnClickListener {
+                        val intent = Intent(this@MusicSelectionActivity, instrument.activityClass)
+                        startActivity(intent)
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    }
+                }
+
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    val m = 28
+                    setMargins(m, 20, m, 20)
+                }
+                button.layoutParams = lp
+
+                verticalLayout.addView(button)
+            }
+
+            instrumentContainer.addView(verticalLayout)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
 
     private fun createLargeInstrumentButton(instrument: InstrumentData, size: Int): Button {
         return Button(this).apply {

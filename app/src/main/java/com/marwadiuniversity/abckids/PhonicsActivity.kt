@@ -40,10 +40,10 @@ class PhonicsActivity : AppCompatActivity() {
     private var levelCompleteSoundId: Int = 0
     private var gameCompleteSoundId: Int = 0
 
-    private var selectedLetter: PhonicsLetter? = null
-    private var isDragInProgress = false
+     private var selectedLetter: PhonicsLetter? = null
+     private var isDragInProgress = false
 
-    // Game state variables
+     // Game state variables
     private var currentLevel = 1
     private val totalLevels = 4
     private var correctMatches = 0
@@ -136,15 +136,15 @@ class PhonicsActivity : AppCompatActivity() {
         }
     }
 
-    private fun startLevel(level: Int) {
-        try {
-            currentLevel = level
-            correctMatches = 0
-            matchedPairs.clear()
-            selectedLetter = null
-            isDragInProgress = false
+     private fun startLevel(level: Int) {
+          try {
+              currentLevel = level
+              correctMatches = 0
+              matchedPairs.clear()
+              selectedLetter = null
+              isDragInProgress = false
 
-            // Progressive difficulty system with FRESH random selection each time
+              // Progressive difficulty system with FRESH random selection each time
             val (itemCount, lettersOrder, objectsOrder, difficultyText) = when (level) {
                 1 -> {
                     val randomItems = allPhonicsData.shuffled().take(5)
@@ -221,7 +221,7 @@ class PhonicsActivity : AppCompatActivity() {
 
     fun onLetterClicked(letter: PhonicsLetter, view: View) {
         try {
-            if (matchedPairs.contains(letter.letter) || isDragInProgress) return
+            if (matchedPairs.contains(letter.letter)) return
 
             // If same letter clicked again, unselect it
             if (selectedLetter?.letter == letter.letter) {
@@ -233,8 +233,6 @@ class PhonicsActivity : AppCompatActivity() {
             // Select new letter (unselects previous if any)
             selectedLetter = letter
             lettersAdapter.setSelectedLetter(letter.letter)
-
-            // Don't start drag automatically - only on long press
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -242,16 +240,22 @@ class PhonicsActivity : AppCompatActivity() {
 
     fun onLetterLongClicked(letter: PhonicsLetter, view: View) {
         try {
-            if (matchedPairs.contains(letter.letter) || isDragInProgress) return
+            onLetterClicked(letter, view)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
-            // Select the letter if not already selected
-            if (selectedLetter?.letter != letter.letter) {
-                selectedLetter = letter
-                lettersAdapter.setSelectedLetter(letter.letter)
+    fun onObjectClicked(letter: PhonicsLetter) {
+        try {
+            if (matchedPairs.contains(letter.letter)) return
+            if (selectedLetter == null) return
+
+            if (selectedLetter?.letter.equals(letter.letter, ignoreCase = true)) {
+                handleCorrectMatch(letter)
+            } else {
+                handleIncorrectMatch()
             }
-
-            // Start drag and drop on long press
-            startDragAndDrop(view, letter)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -299,7 +303,6 @@ class PhonicsActivity : AppCompatActivity() {
                 @Suppress("DEPRECATION")
                 view.startDrag(clipData, shadowBuilder, letter, 0)
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
             isDragInProgress = false
@@ -343,11 +346,11 @@ class PhonicsActivity : AppCompatActivity() {
         }
     }
 
-    private fun resetSelection() {
-        selectedLetter = null
-        isDragInProgress = false
-        lettersAdapter.clearSelection()
-    }
+      private fun resetSelection() {
+          selectedLetter = null
+          isDragInProgress = false
+          lettersAdapter.clearSelection()
+      }
 
     private fun checkLevelCompletion() {
         try {
@@ -546,20 +549,11 @@ class PhonicsActivity : AppCompatActivity() {
                     }
 
                     itemView.isClickable = true
-                    itemView.isLongClickable = true
+                    itemView.isLongClickable = false
 
                     itemView.setOnClickListener {
-                        if (!matchedLetters.contains(letter.letter) && !isDragInProgress) {
+                        if (!matchedLetters.contains(letter.letter)) {
                             onLetterClicked(letter, itemView)
-                        }
-                    }
-
-                    itemView.setOnLongClickListener {
-                        if (!matchedLetters.contains(letter.letter) && !isDragInProgress) {
-                            onLetterLongClicked(letter, itemView)
-                            true
-                        } else {
-                            false
                         }
                     }
 
@@ -620,70 +614,8 @@ class PhonicsActivity : AppCompatActivity() {
                         itemView.alpha = 1.0f
                     }
 
-                    itemView.setOnDragListener { view, dragEvent ->
-                        try {
-                            when (dragEvent.action) {
-                                DragEvent.ACTION_DRAG_STARTED -> {
-                                    val canAccept = !matchedLetters.contains(letter.letter) &&
-                                            dragEvent.clipDescription?.hasMimeType("text/plain") == true
-                                    canAccept
-                                }
-                                DragEvent.ACTION_DRAG_ENTERED -> {
-                                    if (!matchedLetters.contains(letter.letter)) {
-                                        view.scaleX = 1.1f
-                                        view.scaleY = 1.1f
-                                    }
-                                    true
-                                }
-                                DragEvent.ACTION_DRAG_EXITED -> {
-                                    if (!matchedLetters.contains(letter.letter)) {
-                                        view.scaleX = 1.0f
-                                        view.scaleY = 1.0f
-                                    }
-                                    true
-                                }
-                                DragEvent.ACTION_DROP -> {
-                                    if (!matchedLetters.contains(letter.letter)) {
-                                        val draggedLetter = dragEvent.localState as? PhonicsLetter
-
-                                        if (draggedLetter != null) {
-                                            if (draggedLetter.letter.equals(letter.letter, ignoreCase = true)) {
-                                                handleCorrectMatch(letter)
-                                            } else {
-                                                handleIncorrectMatch()
-                                            }
-                                        } else {
-                                            val clipData = dragEvent.clipData
-                                            if (clipData != null && clipData.itemCount > 0) {
-                                                val draggedLetterText = clipData.getItemAt(0).text.toString()
-                                                if (draggedLetterText.equals(letter.letter, ignoreCase = true)) {
-                                                    handleCorrectMatch(letter)
-                                                } else {
-                                                    handleIncorrectMatch()
-                                                }
-                                            }
-                                        }
-
-                                        view.scaleX = 1.0f
-                                        view.scaleY = 1.0f
-                                    }
-                                    true
-                                }
-                                DragEvent.ACTION_DRAG_ENDED -> {
-                                    view.scaleX = 1.0f
-                                    view.scaleY = 1.0f
-                                    isDragInProgress = false
-                                    true
-                                }
-                                else -> false
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            isDragInProgress = false
-                            view.scaleX = 1.0f
-                            view.scaleY = 1.0f
-                            false
-                        }
+                    itemView.setOnClickListener {
+                        onObjectClicked(letter)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()

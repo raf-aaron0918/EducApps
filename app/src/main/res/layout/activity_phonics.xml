@@ -113,7 +113,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Drag letters to their matching pictures!"
+            android:text="Tap a letter, then tap the matching picture!"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#FF44A1F6"

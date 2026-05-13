@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Animal Quiz"
+                android:text="A-Z Alphabet Quiz"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="#FF2D0C6E"
@@ -165,7 +165,7 @@
                 android:id="@+id/question_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="What animal is this?"
+                android:text="What starts with this letter?"
                 android:textSize="19sp"
                 android:textColor="#FFFFFFFF"
                 android:fontFamily="sans-serif-black"
@@ -174,14 +174,14 @@
                 android:background="@drawable/game_card_phonics_bg"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Animal Emoji Display -->
-            <TextView
+            <!-- Letter Picture Display -->
+            <ImageView
                 android:id="@+id/animal_emoji"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:text="ðŸ˜"
-                android:textSize="76sp"
-                android:gravity="center"
+                android:src="@drawable/a"
+                android:contentDescription="Letter quiz image"
+                android:scaleType="centerInside"
                 android:background="@drawable/quiz_surface_bg"
                 android:elevation="8dp"
                 android:layout_marginBottom="12dp" />

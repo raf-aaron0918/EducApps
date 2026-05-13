@@ -10,7 +10,9 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import android.widget.TextView
 import android.util.Log
 import com.marwadiuniversity.abckids.utils.InstrumentSynthesizer
@@ -102,7 +104,7 @@ class PianoActivity : Activity() {
         try {
             val mainContainer = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                setBackgroundColor(Color.parseColor("#8A2BE2")) // Purple background
+                setBackgroundResource(R.drawable.background)
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -130,7 +132,7 @@ class PianoActivity : Activity() {
                     0,
                     1f // Take remaining space after header
                 ).apply {
-                    setMargins(40, 0, 40, 30)
+                    setMargins(20, 8, 20, 24)
                 }
             }
 
@@ -151,68 +153,66 @@ class PianoActivity : Activity() {
 
     private fun createHeader(): LinearLayout {
         val headerContainer = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
+            orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(30)
+                LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            setPadding(20, 10, 20, 10)
-
-            // Create gradient background similar to the XML
-            val drawable = GradientDrawable().apply {
-                colors = intArrayOf(
-                    Color.parseColor("#6FC9C6"),
-                    Color.parseColor("#6FC9C6")
-                )
-                orientation = GradientDrawable.Orientation.TL_BR // 45 degree angle
-            }
-            background = drawable
+            background = resources.getDrawable(android.R.color.transparent, null)
         }
 
         try {
-            // Back button
-            val backButton = TextView(this).apply {
-                id = View.generateViewId() // equivalent to android:id="@+id/btn_back"
+            val topRow = LinearLayout(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
-                    dpToPx(40),
-                    dpToPx(40)
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(16, 14, 16, 8)
+                gravity = Gravity.CENTER_VERTICAL
+            }
 
-                // Set back arrow as text
-                text = "←"
-                textSize = 20f
-                setTextColor(Color.WHITE)
-                gravity = Gravity.CENTER
-
-                // No background - just the arrow on teal background
-                background = null
-
-                // Add ripple effect equivalent to selectableItemBackgroundBorderless
-                isClickable = true
-                isFocusable = true
-
+            val backButton = ImageView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(44), dpToPx(44))
+                setImageResource(R.drawable.ic_back)
+                setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10))
+                setBackgroundResource(R.drawable.quiz_surface_bg)
+                elevation = 4f
+                contentDescription = "Back"
                 setOnClickListener {
                     try {
-                        finish() // Close activity and go back
+                        finish()
                     } catch (e: Exception) {
                         Log.e("PianoActivity", "Error handling back button", e)
                     }
                 }
             }
+            topRow.addView(backButton)
 
-            // You can add a title or other header content here if needed
-            val spacer = View(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    1f // Take remaining space
-                )
+            val flexibleSpace = Space(this).apply {
+                layoutParams = LinearLayout.LayoutParams(0, 1, 1f)
             }
+            topRow.addView(flexibleSpace)
 
-            headerContainer.addView(backButton)
-            headerContainer.addView(spacer)
+            val fixedSpace = Space(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(44), dpToPx(44))
+            }
+            topRow.addView(fixedSpace)
+
+            headerContainer.addView(topRow)
+
+val titleText = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(360), dpToPx(160)).apply {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
+                text = "piano"
+                textSize = 48f
+                setTextColor(Color.parseColor("#3E2723"))
+                typeface = Typeface.DEFAULT_BOLD
+                gravity = Gravity.CENTER
+            }
+            headerContainer.addView(titleText)
+
 
         } catch (e: Exception) {
             Log.e("PianoActivity", "Error creating header", e)
@@ -792,3 +792,4 @@ class PianoActivity : Activity() {
         }
     }
 }
+

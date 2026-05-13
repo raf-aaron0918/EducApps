@@ -10,6 +10,7 @@ import android.os.Looper
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.abs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -545,12 +546,39 @@ class PhonicsActivity : AppCompatActivity() {
                         }
                     }
 
-                    itemView.setOnLongClickListener {
-                        if (!matchedLetters.contains(letter.letter) && !isDragInProgress) {
-                            onLetterLongClicked(letter, itemView)
-                            true
-                        } else {
-                            false
+                    itemView.isLongClickable = false
+                    val touchSlop = ViewConfiguration.get(itemView.context).scaledTouchSlop
+                    var startX = 0f
+                    var startY = 0f
+                    var dragStarted = false
+
+                    itemView.setOnTouchListener { _, event ->
+                        if (matchedLetters.contains(letter.letter) || isDragInProgress) return@setOnTouchListener false
+
+                        when (event.actionMasked) {
+                            MotionEvent.ACTION_DOWN -> {
+                                startX = event.x
+                                startY = event.y
+                                dragStarted = false
+                                false
+                            }
+                            MotionEvent.ACTION_MOVE -> {
+                                if (!dragStarted) {
+                                    val dx = abs(event.x - startX)
+                                    val dy = abs(event.y - startY)
+                                    if (dx > touchSlop || dy > touchSlop) {
+                                        dragStarted = true
+                                        if (selectedLetter?.letter != letter.letter) {
+                                            selectedLetter = letter
+                                            lettersAdapter.setSelectedLetter(letter.letter)
+                                        }
+                                        startDragAndDrop(itemView, letter)
+                                        return@setOnTouchListener true
+                                    }
+                                }
+                                false
+                            }
+                            else -> false
                         }
                     }
 

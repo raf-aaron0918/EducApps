@@ -1,7 +1,6 @@
 package com.marwadiuniversity.abckids
 
 import android.graphics.Color
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +9,7 @@ import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +23,7 @@ import java.util.Locale
 class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var questionText: TextView
-    private lateinit var animalEmoji: TextView
+    private lateinit var questionImage: ImageView
     private lateinit var quizScoreText: TextView
     private lateinit var quizHighScoreText: TextView
     private lateinit var quizWrongLeftText: TextView
@@ -33,7 +33,6 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var textToSpeech: TextToSpeech? = null
     private var isTTSReady = false
     private var isCurrentlySpeaking = false
-    private var animalSoundPlayer: MediaPlayer? = null
 
     private var currentQuestionIndex = 0
     private var score = 0
@@ -41,36 +40,12 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var highScore = 0
     private val questions = ArrayList<QuizQuestion>()
 
-    private val animalSounds = mapOf(
-        "\uD83D\uDC36" to R.raw.dog_sound,
-        "\uD83D\uDC31" to R.raw.cat_sound,
-        "\uD83D\uDC2E" to R.raw.cow_sound,
-        "\uD83D\uDC37" to R.raw.pig_sound,
-        "\uD83D\uDC34" to R.raw.horse_sound,
-        "\uD83D\uDC11" to R.raw.sheep_sound,
-        "\uD83D\uDC38" to R.raw.frog_sound,
-        "\uD83D\uDC18" to R.raw.elephant_sound,
-        "\uD83E\uDD81" to R.raw.lion_sound,
-        "\uD83D\uDC2F" to R.raw.tiger_sound,
-        "\uD83D\uDC3B" to R.raw.bear_sound,
-        "\uD83D\uDC35" to R.raw.monkey_sound,
-        "\uD83D\uDC14" to R.raw.chicken_sound,
-        "\uD83D\uDC26" to R.raw.bird_sound,
-        "\uD83E\uDD86" to R.raw.duck_sound,
-        "\uD83D\uDC3A" to R.raw.wolf_sound,
-        "\uD83E\uDD85" to R.raw.eagle_sound,
-        "\uD83D\uDC19" to R.raw.generic_sound,
-        "\uD83D\uDC27" to R.raw.penguin_sound,
-        "\uD83E\uDD89" to R.raw.owl_sound
-    )
-
     companion object {
         private const val NEXT_QUESTION_DELAY_CORRECT = 1200L
         private const val NEXT_QUESTION_DELAY_WRONG = 1000L
-        private const val ANIMAL_SOUND_DELAY = 250L
         private const val MAX_WRONG_ATTEMPTS = 10
         private const val TTS_TAG = "GameTTS"
-        private const val PREFS_NAME = "animal_quiz_prefs"
+        private const val PREFS_NAME = "alphabet_quiz_prefs"
         private const val PREF_HIGH_SCORE = "high_score"
     }
 
@@ -87,7 +62,7 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun initializeViews() {
         questionText = findViewById(R.id.question_text)
-        animalEmoji = findViewById(R.id.animal_emoji)
+        questionImage = findViewById(R.id.animal_emoji)
         quizScoreText = findViewById(R.id.quiz_score_text)
         quizHighScoreText = findViewById(R.id.quiz_high_score_text)
         quizWrongLeftText = findViewById(R.id.quiz_wrong_left_text)
@@ -137,7 +112,6 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun setupToolbar() {
         findViewById<View>(R.id.btn_back).setOnClickListener {
             stopSpeaking()
-            stopAnimalSound()
             finish()
         }
     }
@@ -150,11 +124,11 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun shuffleQuestions() {
         questions.clear()
-        val shuffledQuestions = GameData.animalQuestions.map { originalQuestion ->
+        val shuffledQuestions = GameData.alphabetQuestions.map { originalQuestion ->
             val optionsList = originalQuestion.options.toMutableList()
             optionsList.shuffle()
             QuizQuestion(
-                emoji = originalQuestion.emoji,
+                imageResId = originalQuestion.imageResId,
                 correctAnswer = originalQuestion.correctAnswer,
                 options = optionsList
             )
@@ -176,8 +150,8 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun displayQuestion(question: QuizQuestion) {
-        animalEmoji.text = question.emoji
-        animalEmoji.startAnimation(AnimationHelper.bounceAnimation(this))
+        questionImage.setImageResource(question.imageResId)
+        questionImage.startAnimation(AnimationHelper.bounceAnimation(this))
         answerButtons.forEachIndexed { index, button ->
             button.text = question.options[index]
             button.isEnabled = true
@@ -193,7 +167,7 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val isCorrect = selectedIndex == correctIndex
 
         answerButtons.forEach { it.isEnabled = false }
-        handleAnswerResult(selectedIndex, correctIndex, isCorrect, currentQuestion.emoji)
+        handleAnswerResult(selectedIndex, correctIndex, isCorrect, currentQuestion)
 
         if (!isCorrect && wrongAttempts >= MAX_WRONG_ATTEMPTS) {
             Handler(Looper.getMainLooper()).postDelayed({ showGameOver() }, NEXT_QUESTION_DELAY_WRONG)
@@ -207,14 +181,16 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }, delay)
     }
 
-    private fun handleAnswerResult(selectedIndex: Int, correctIndex: Int, isCorrect: Boolean, emoji: String) {
+    private fun handleAnswerResult(selectedIndex: Int, correctIndex: Int, isCorrect: Boolean, question: QuizQuestion) {
         if (isCorrect) {
             score++
             updateHighScoreIfNeeded()
             updateQuizStatsUI()
             showCorrectAnswer(selectedIndex)
             playSuccessSound()
-            Handler(Looper.getMainLooper()).postDelayed({ playAnimalSound(emoji) }, ANIMAL_SOUND_DELAY)
+            val animal = question.correctAnswer
+            val letter = GameData.itemsByLetter.entries.find { it.value.contains(animal) }?.key?.toString() ?: "?"
+            speakText("Great job! $animal starts with $letter!")
         } else {
             wrongAttempts++
             score--
@@ -243,8 +219,8 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun showFinalScore() {
         updateHighScoreIfNeeded()
         questionText.text = "Quiz Complete!"
-        animalEmoji.text = "\uD83C\uDFC6"
-        animalEmoji.startAnimation(AnimationHelper.bounceAnimation(this))
+        questionImage.setImageResource(R.drawable.alphabets)
+        questionImage.startAnimation(AnimationHelper.bounceAnimation(this))
         answerButtons.forEach { it.visibility = View.GONE }
 
         val finalMessage = when {
@@ -260,8 +236,8 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun showGameOver() {
         updateHighScoreIfNeeded()
         questionText.text = "Game Over"
-        animalEmoji.text = "\uD83D\uDE35"
-        animalEmoji.startAnimation(AnimationHelper.incorrectShakeAnimation(this))
+        questionImage.setImageResource(R.drawable.alphabets)
+        questionImage.startAnimation(AnimationHelper.incorrectShakeAnimation(this))
         answerButtons.forEach { it.visibility = View.GONE }
         Toast.makeText(this, "Game Over. Final Score: $score  High Score: $highScore", Toast.LENGTH_LONG).show()
         speakText("Game over. Your final score is $score")
@@ -281,30 +257,6 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 .edit()
                 .putInt(PREF_HIGH_SCORE, highScore)
                 .apply()
-        }
-    }
-
-    private fun playAnimalSound(emoji: String) {
-        try {
-            val soundResourceId = animalSounds[emoji] ?: R.raw.generic_sound
-            stopAnimalSound()
-            animalSoundPlayer = MediaPlayer.create(this, soundResourceId)
-            animalSoundPlayer?.start()
-            Handler(Looper.getMainLooper()).postDelayed({ stopAnimalSound() }, 1800L)
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error playing animal sound: ${e.message}")
-        }
-    }
-
-    private fun stopAnimalSound() {
-        try {
-            animalSoundPlayer?.let { player ->
-                if (player.isPlaying) player.stop()
-                player.release()
-            }
-            animalSoundPlayer = null
-        } catch (e: Exception) {
-            Log.e(TTS_TAG, "Error stopping animal sound: ${e.message}")
         }
     }
 
@@ -348,13 +300,11 @@ class GameActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onPause() {
         stopSpeaking()
-        stopAnimalSound()
         super.onPause()
     }
 
     override fun onDestroy() {
         stopSpeaking()
-        stopAnimalSound()
         textToSpeech?.shutdown()
         textToSpeech = null
         isTTSReady = false
