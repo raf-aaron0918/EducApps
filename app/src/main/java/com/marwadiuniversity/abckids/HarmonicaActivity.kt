@@ -143,17 +143,7 @@ class HarmonicaActivity : AppCompatActivity() {
 
             headerContainer.addView(topRow)
 
-val titleText = TextView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(dpToPx(360), dpToPx(160)).apply {
-                    gravity = Gravity.CENTER_HORIZONTAL
-                }
-                text = "harmonica"
-                textSize = 40f
-                setTextColor(Color.parseColor("#3E2723"))
-                typeface = Typeface.DEFAULT_BOLD
-                gravity = Gravity.CENTER
-            }
-            headerContainer.addView(titleText)
+            // Title removed
 
 
         } catch (e: Exception) {
@@ -462,12 +452,13 @@ val titleText = TextView(this).apply {
         try {
             orientation = GradientDrawable.Orientation.TOP_BOTTOM
             colors = intArrayOf(
-                Color.parseColor("#ECF0F1"), // Light gray
-                Color.parseColor("#BDC3C7"), // Medium gray
-                Color.parseColor("#95A5A6")  // Darker gray
+                Color.parseColor("#F5F7FA"), // Specular highlight
+                Color.parseColor("#B8C6DB"), // Metallic body
+                Color.parseColor("#8E9EAB"), // Shadow
+                Color.parseColor("#B8C6DB")  // Reflection
             )
-            cornerRadius = 12f
-            setStroke(2, Color.parseColor("#7F8C8D"))
+            cornerRadius = 16f
+            setStroke(2, Color.parseColor("#E0E0E0"))
         } catch (e: Exception) {
             Log.e("HarmonicaActivity", "Error creating metallic background", e)
         }
@@ -506,11 +497,12 @@ val titleText = TextView(this).apply {
             shape = GradientDrawable.RECTANGLE
             val baseColor = Color.parseColor(colorHex)
             colors = intArrayOf(
-                baseColor,
-                adjustBrightness(baseColor, 0.7f)
+                adjustBrightness(baseColor, 1.2f), // Top highlight
+                baseColor,                        // Main color
+                adjustBrightness(baseColor, 0.6f)  // Bottom shadow
             )
-            cornerRadius = 12f
-            setStroke(2, Color.WHITE)
+            cornerRadius = 20f
+            setStroke(dpToPx(2), Color.parseColor("#40FFFFFF"))
         } catch (e: Exception) {
             Log.e("HarmonicaActivity", "Error creating hole background", e)
         }

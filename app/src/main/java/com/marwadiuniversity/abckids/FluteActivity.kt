@@ -138,17 +138,7 @@ class FluteActivity : AppCompatActivity() {
 
             headerContainer.addView(topRow)
 
-val titleText = TextView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(dpToPx(360), dpToPx(160)).apply {
-                    gravity = Gravity.CENTER_HORIZONTAL
-                }
-                text = "flute"
-                textSize = 40f
-                setTextColor(Color.parseColor("#3E2723"))
-                typeface = Typeface.DEFAULT_BOLD
-                gravity = Gravity.CENTER
-            }
-            headerContainer.addView(titleText)
+            // Title removed
 
 
         } catch (e: Exception) {
@@ -167,22 +157,6 @@ val titleText = TextView(this).apply {
         }
 
         try {
-            // Title
-            val titleText = TextView(this).apply {
-                id = View.generateViewId()
-                layoutParams = RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    addRule(RelativeLayout.CENTER_HORIZONTAL)
-                    topMargin = dpToPx(20) // Reduced margin since we have header
-                }
-                text = "बांसुरी - Indian Flute"
-                textSize = 22f
-                setTextColor(Color.parseColor("#3E2723"))
-                typeface = Typeface.DEFAULT_BOLD
-            }
-
             // Flute container
             val fluteContainer = RelativeLayout(this).apply {
                 id = View.generateViewId()
@@ -206,14 +180,15 @@ val titleText = TextView(this).apply {
                 ).apply {
                     addRule(RelativeLayout.CENTER_HORIZONTAL)
                     addRule(RelativeLayout.BELOW, fluteContainer.id)
-                    topMargin = dpToPx(25) // Reduced margin
+                    topMargin = dpToPx(40)
                 }
                 text = "Tap the holes to play sargam notes"
-                textSize = 16f
-                setTextColor(Color.parseColor("#5D4037"))
+                textSize = 18f
+                setTextColor(Color.parseColor("#3E2723"))
+                typeface = Typeface.DEFAULT_BOLD
+                setShadowLayer(2f, 1f, 1f, Color.WHITE)
             }
 
-            mainLayout.addView(titleText)
             mainLayout.addView(fluteContainer)
             mainLayout.addView(instructionText)
         } catch (e: Exception) {
@@ -276,14 +251,13 @@ val titleText = TextView(this).apply {
         return GradientDrawable().apply {
             orientation = GradientDrawable.Orientation.TOP_BOTTOM
             colors = intArrayOf(
-                Color.parseColor("#DEB887"), // Burlywood
-                Color.parseColor("#D2B48C"), // Tan
-                Color.parseColor("#CD853F"), // Peru
-                Color.parseColor("#A0522D"), // Sienna
-                Color.parseColor("#CD853F")  // Peru
+                Color.parseColor("#E6C07B"), // Light bamboo
+                Color.parseColor("#D4A76A"), // Main bamboo body
+                Color.parseColor("#B38B59"), // Shadow part
+                Color.parseColor("#8E6E45")  // Deep shadow
             )
-            cornerRadius = dpToPx(22).toFloat()
-            setStroke(dpToPx(3), Color.parseColor("#8B4513"))
+            cornerRadius = dpToPx(24).toFloat()
+            setStroke(dpToPx(1), Color.parseColor("#40000000"))
         }
     }
 
@@ -291,12 +265,12 @@ val titleText = TextView(this).apply {
         return GradientDrawable().apply {
             shape = GradientDrawable.OVAL
             colors = intArrayOf(
-                Color.parseColor("#2E2E2E"),
-                Color.parseColor("#1A1A1A"),
+                Color.parseColor("#333333"),
+                Color.parseColor("#111111"),
                 Color.parseColor("#000000")
             )
             orientation = GradientDrawable.Orientation.TOP_BOTTOM
-            setStroke(dpToPx(2), Color.parseColor("#8B4513"))
+            setStroke(dpToPx(2), Color.parseColor("#40FFFFFF"))
         }
     }
 
@@ -363,12 +337,11 @@ val titleText = TextView(this).apply {
             shape = GradientDrawable.OVAL
             val baseColor = Color.parseColor(colorHex)
             colors = intArrayOf(
-                adjustBrightness(baseColor, 0.9f),
-                Color.parseColor("#2A2A2A"),
-                Color.parseColor("#111111")
+                Color.parseColor("#1A1A1A"), // Inner deep hole
+                Color.parseColor("#000000")
             )
             orientation = GradientDrawable.Orientation.TOP_BOTTOM
-            setStroke(dpToPx(2), Color.parseColor("#EED39B"))
+            setStroke(dpToPx(4), baseColor) // Vibrant ring around the hole
         }
     }
 

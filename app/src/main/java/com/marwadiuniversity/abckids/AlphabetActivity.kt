@@ -217,13 +217,19 @@ class AlphabetActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestu
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             tts?.let {
-                val result = it.setLanguage(Locale.US)
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    it.setLanguage(Locale.getDefault())
+                // Set natural human-like voice parameters
+                try {
+                    val bestVoice = it.voices.filter { v -> 
+                        v.locale.language == Locale.US.language && !v.isNetworkConnectionRequired
+                    }.maxByOrNull { v -> v.quality }
+                    bestVoice?.let { v -> it.voice = v }
+                } catch (e: Exception) {
+                    it.setLanguage(Locale.US)
                 }
 
-                it.setSpeechRate(0.7f)  // slightly slower for better understanding
-                it.setPitch(1.2f)
+                it.setSpeechRate(0.9f) // Natural flow
+                it.setPitch(1.0f)      // Natural pitch
+                
                 it.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
                         isCurrentlySpeaking = true

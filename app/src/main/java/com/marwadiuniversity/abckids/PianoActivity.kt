@@ -3,18 +3,20 @@ package com.marwadiuniversity.abckids
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.Space
 import android.widget.TextView
-import android.util.Log
 import com.marwadiuniversity.abckids.utils.InstrumentSynthesizer
 
 class PianoActivity : Activity() {
@@ -31,7 +33,7 @@ class PianoActivity : Activity() {
 
     // Piano keys references for drag detection
     private val pianoKeys = mutableListOf<TextView>()
-    private var lastTouchedKey: TextView? = null
+    private val lastTouchedKeys = mutableMapOf<Int, TextView?>()
     private var isDragging = false
 
     // Store original backgrounds for each key
@@ -115,7 +117,7 @@ class PianoActivity : Activity() {
             val header = createHeader()
             mainContainer.addView(header)
 
-            // Create piano container with rounded corners and gradient
+            // Create piano container with original gold/orange gradient
             val pianoContainer = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 val drawable = GradientDrawable().apply {
@@ -130,9 +132,9 @@ class PianoActivity : Activity() {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     0,
-                    1f // Take remaining space after header
+                    1f
                 ).apply {
-                    setMargins(20, 8, 20, 24)
+                    setMargins(dpToPx(15), dpToPx(5), dpToPx(15), dpToPx(10))
                 }
             }
 
@@ -140,7 +142,7 @@ class PianoActivity : Activity() {
             val topButtonsContainer = createTopButtons()
             pianoContainer.addView(topButtonsContainer)
 
-            // Piano keys container
+            // Piano keys container (now using RelativeLayout for overlap support)
             val keysContainer = createPianoKeys()
             pianoContainer.addView(keysContainer)
 
@@ -201,19 +203,7 @@ class PianoActivity : Activity() {
 
             headerContainer.addView(topRow)
 
-val titleText = TextView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(dpToPx(360), dpToPx(160)).apply {
-                    gravity = Gravity.CENTER_HORIZONTAL
-                }
-                text = "piano"
-                textSize = 48f
-                setTextColor(Color.parseColor("#3E2723"))
-                typeface = Typeface.DEFAULT_BOLD
-                gravity = Gravity.CENTER
-            }
-            headerContainer.addView(titleText)
-
-
+                        // Title removed to maximize piano size
         } catch (e: Exception) {
             Log.e("PianoActivity", "Error creating header", e)
         }
@@ -445,75 +435,111 @@ val titleText = TextView(this).apply {
         return if (index in buttonColors.indices) buttonColors[index] else "#FF4444"
     }
 
-    private fun createPianoKeys(): LinearLayout {
-        val container = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER
+    private fun createPianoKeys(): RelativeLayout {
+        val rootContainer = RelativeLayout(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-
-            try {
-                val drawable = GradientDrawable().apply {
-                    // Set corner radius for curved corners
-                    cornerRadii = floatArrayOf(
-                        dpToPx(25).toFloat(), dpToPx(25).toFloat(), // top left
-                        dpToPx(25).toFloat(), dpToPx(25).toFloat(), // top right
-                        dpToPx(8).toFloat(), dpToPx(8).toFloat(),   // bottom right
-                        dpToPx(8).toFloat(), dpToPx(8).toFloat()    // bottom left
-                    )
-                    colors = intArrayOf(
-                        Color.parseColor("#FF4500"),
-                        Color.parseColor("#FF6347")
-                    )
-                }
-                background = drawable
-                setPadding(15, 15, 15, 15)
-            } catch (e: Exception) {
-                Log.e("PianoActivity", "Error setting up piano keys container", e)
-            }
         }
 
         try {
-            val notes = listOf("C", "D", "E", "F", "G", "A", "B", "C2")
-            val keyColors = listOf(
+            val whiteNotes = listOf("C", "D", "E", "F", "G", "A", "B", "C2")
+            val whiteKeyCount = whiteNotes.size
+            
+            // White keys layout
+            val whiteKeysLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT
+                )
+                
+                val drawable = GradientDrawable().apply {
+                    cornerRadii = floatArrayOf(
+                        dpToPx(25).toFloat(), dpToPx(25).toFloat(),
+                        dpToPx(25).toFloat(), dpToPx(25).toFloat(),
+                        dpToPx(8).toFloat(), dpToPx(8).toFloat(),
+                        dpToPx(8).toFloat(), dpToPx(8).toFloat()
+                    )
+                    colors = intArrayOf(Color.parseColor("#FF4500"), Color.parseColor("#FF6347"))
+                }
+                background = drawable
+                setPadding(dpToPx(5), dpToPx(5), dpToPx(5), dpToPx(5))
+            }
+            rootContainer.addView(whiteKeysLayout)
+
+            val whiteKeyColors = listOf(
                 "#FF4444", "#FF8844", "#FFFF44", "#88FF88",
                 "#44FF44", "#44FFFF", "#4488FF", "#8844FF"
             )
 
-            notes.forEachIndexed { index, note ->
-                val key = createPianoKey(note, keyColors[index])
-                container.addView(key)
-                pianoKeys.add(key) // Add to our list for drag detection
+            whiteNotes.forEachIndexed { index, note ->
+                val key = createPianoKey(note, whiteKeyColors[index], true)
+                whiteKeysLayout.addView(key)
+                pianoKeys.add(key)
             }
 
-            // Set up global touch listener for drag detection
-            setupGlobalTouchListener(container)
+            // Black keys overlay
+            whiteKeysLayout.post {
+                try {
+                    val keyWidth = whiteKeysLayout.width / whiteKeyCount
+                    val blackKeyWidth = (keyWidth * 0.6).toInt()
+                    val blackKeyHeight = (whiteKeysLayout.height * 0.6).toInt()
+
+                    val blackNotes = listOf(
+                        Pair("C#", 1), Pair("D#", 2), 
+                        Pair("F#", 4), Pair("G#", 5), Pair("A#", 6)
+                    )
+
+                    blackNotes.forEach { (note, position) ->
+                        val blackKey = createPianoKey(note, "#000000", false).apply {
+                            layoutParams = RelativeLayout.LayoutParams(blackKeyWidth, blackKeyHeight).apply {
+                                leftMargin = (keyWidth * position) - (blackKeyWidth / 2) + dpToPx(5)
+                                topMargin = dpToPx(5)
+                            }
+                        }
+                        rootContainer.addView(blackKey)
+                        pianoKeys.add(blackKey)
+                    }
+                } catch (e: Exception) {
+                    Log.e("PianoActivity", "Error adding black keys", e)
+                }
+            }
+
+            setupGlobalTouchListener(rootContainer)
         } catch (e: Exception) {
             Log.e("PianoActivity", "Error creating piano keys", e)
         }
 
-        return container
+        return rootContainer
     }
 
-    private fun setupGlobalTouchListener(container: LinearLayout) {
+    private fun setupGlobalTouchListener(container: RelativeLayout) {
         container.setOnTouchListener { _, event ->
             try {
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                         isDragging = true
-                        handleTouchAtPosition(event.x, event.y, true)
+                        val pointerIndex = event.actionIndex
+                        handleTouchAtPosition(event.getX(pointerIndex), event.getY(pointerIndex), event.getPointerId(pointerIndex))
                     }
                     MotionEvent.ACTION_MOVE -> {
                         if (isDragging) {
-                            handleTouchAtPosition(event.x, event.y, false)
+                            for (i in 0 until event.pointerCount) {
+                                handleTouchAtPosition(event.getX(i), event.getY(i), event.getPointerId(i))
+                            }
                         }
                     }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        isDragging = false
-                        resetAllKeysVisual()
-                        lastTouchedKey = null
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
+                        val pointerId = event.getPointerId(event.actionIndex)
+                        lastTouchedKeys[pointerId]?.resetKeyVisual()
+                        lastTouchedKeys.remove(pointerId)
+                        
+                        if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
+                            isDragging = false
+                            resetAllKeysVisual()
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -523,22 +549,18 @@ val titleText = TextView(this).apply {
         }
     }
 
-    private fun handleTouchAtPosition(x: Float, y: Float, isInitialTouch: Boolean) {
+    private fun handleTouchAtPosition(x: Float, y: Float, pointerId: Int) {
         try {
-            // Find which key is at this position
             val touchedKey = findKeyAtPosition(x, y)
+            val lastKey = lastTouchedKeys[pointerId]
 
-            if (touchedKey != null && touchedKey != lastTouchedKey) {
-                // Reset previous key visual if exists
-                lastTouchedKey?.resetKeyVisual()
-
-                // Play sound and apply visual effect to new key
-                val note = touchedKey.text.toString()
+            if (touchedKey != null && touchedKey != lastKey) {
+                lastKey?.resetKeyVisual()
+                val note = touchedKey.tag.toString()
                 playPianoNote(note)
                 touchedKey.applyPressedVisual()
                 touchedKey.addSparkleEffect()
-
-                lastTouchedKey = touchedKey
+                lastTouchedKeys[pointerId] = touchedKey
             }
         } catch (e: Exception) {
             Log.e("PianoActivity", "Error handling touch at position", e)
@@ -547,25 +569,21 @@ val titleText = TextView(this).apply {
 
     private fun findKeyAtPosition(x: Float, y: Float): TextView? {
         try {
-            pianoKeys.forEach { key ->
+            // Screen locations for accurate hit detection
+            for (i in pianoKeys.size - 1 downTo 0) {
+                val key = pianoKeys[i]
                 val location = IntArray(2)
                 key.getLocationOnScreen(location)
-                val keyLeft = location[0]
-                val keyTop = location[1]
-                val keyRight = keyLeft + key.width
-                val keyBottom = keyTop + key.height
+                
+                val parentLocation = IntArray(2)
+                (key.parent as View).getLocationOnScreen(parentLocation)
+                
+                val screenTouchX = x + parentLocation[0]
+                val screenTouchY = y + parentLocation[1]
 
-                // Convert screen coordinates to relative coordinates
-                val containerLocation = IntArray(2)
-                key.parent?.let { parent ->
-                    (parent as View).getLocationOnScreen(containerLocation)
-                    val relativeX = x + containerLocation[0]
-                    val relativeY = y + containerLocation[1]
-
-                    if (relativeX >= keyLeft && relativeX <= keyRight &&
-                        relativeY >= keyTop && relativeY <= keyBottom) {
-                        return key
-                    }
+                if (screenTouchX >= location[0] && screenTouchX <= location[0] + key.width &&
+                    screenTouchY >= location[1] && screenTouchY <= location[1] + key.height) {
+                    return key
                 }
             }
         } catch (e: Exception) {
@@ -574,60 +592,40 @@ val titleText = TextView(this).apply {
         return null
     }
 
-    private fun createPianoKey(note: String, colorHex: String): TextView {
+    private fun createPianoKey(note: String, colorHex: String, isWhite: Boolean): TextView {
         return TextView(this).apply {
             text = note
-            textSize = 24f
+            tag = note // Use tag for note lookup
+            textSize = if (isWhite) 24f else 14f
             setTextColor(Color.WHITE)
-            gravity = Gravity.CENTER
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1f
-            ).apply {
-                setMargins(dpToPx(4), 0, dpToPx(4), 0)
+            gravity = if (isWhite) Gravity.CENTER else Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            if (!isWhite) setPadding(0, 0, 0, dpToPx(10))
+            
+            if (isWhite) {
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
+                    setMargins(dpToPx(4), 0, dpToPx(4), 0)
+                }
             }
-
-            // Store original color in tag for reference
-            tag = colorHex
 
             try {
                 val drawable = GradientDrawable().apply {
-                    cornerRadius = 15f
-                    colors = intArrayOf(
-                        Color.parseColor(colorHex),
-                        adjustBrightness(Color.parseColor(colorHex), 0.8f)
-                    )
-                    setStroke(2, Color.WHITE)
+                    cornerRadius = dpToPx(if (isWhite) 15 else 8).toFloat()
+                    if (isWhite) {
+                        colors = intArrayOf(
+                            Color.parseColor(colorHex),
+                            adjustBrightness(Color.parseColor(colorHex), 0.8f)
+                        )
+                        setStroke(2, Color.WHITE)
+                    } else {
+                        colors = intArrayOf(Color.parseColor("#444444"), Color.parseColor("#000000"))
+                        setStroke(1, Color.BLACK)
+                    }
                 }
                 background = drawable
-                // Store the original background for later restoration
                 keyOriginalBackgrounds[this] = drawable
+                elevation = dpToPx(if (isWhite) 4 else 8).toFloat()
             } catch (e: Exception) {
-                Log.e("PianoActivity", "Error setting up piano key background", e)
-            }
-
-            // Individual key touch listener (fallback for single touches)
-            setOnTouchListener { v, event ->
-                try {
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            if (!isDragging) {
-                                applyPressedVisual()
-                                playPianoNote(note)
-                                addSparkleEffect()
-                            }
-                        }
-                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                            if (!isDragging) {
-                                resetKeyVisual()
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e("PianoActivity", "Error handling piano key touch", e)
-                }
-                false // Allow parent to handle drag events
+                Log.e("PianoActivity", "Error setting up key background", e)
             }
         }
     }
@@ -647,41 +645,21 @@ val titleText = TextView(this).apply {
             scaleX = 1.0f
             scaleY = 1.0f
             alpha = 1.0f
-            // Restore the original background
-            keyOriginalBackgrounds[this]?.let { originalBackground ->
-                background = originalBackground
-            }
+            keyOriginalBackgrounds[this]?.let { background = it }
         } catch (e: Exception) {
             Log.e("PianoActivity", "Error resetting key visual", e)
         }
     }
 
     private fun resetAllKeysVisual() {
-        try {
-            pianoKeys.forEach { key ->
-                key.resetKeyVisual()
-            }
-        } catch (e: Exception) {
-            Log.e("PianoActivity", "Error resetting all keys visual", e)
-        }
+        pianoKeys.forEach { it.resetKeyVisual() }
     }
 
     private fun playPianoNote(note: String) {
         try {
-            // Use synthesized notes so piano always has audible sound even when raw resources are missing/silent.
             instrumentSynthesizer?.playPianoSound(note)
-
-            // Optional fallback to bundled raw files if available.
             pianoPlayers[note]?.let { player ->
-                try {
-                    if (player.isPlaying) {
-                        player.seekTo(0)
-                    } else {
-                        player.start()
-                    }
-                } catch (_: Exception) {
-                    // Synth path already played; ignore raw playback errors.
-                }
+                if (player.isPlaying) player.seekTo(0) else player.start()
             }
         } catch (e: Exception) {
             Log.e("PianoActivity", "Error playing piano note: $note", e)
@@ -690,106 +668,41 @@ val titleText = TextView(this).apply {
 
     private fun TextView.addSparkleEffect() {
         try {
-            // Store the current background before applying sparkle
-            val currentBackground = background
-
-            // Create sparkle effect
-            val sparkleDrawable = GradientDrawable().apply {
+            val original = background
+            background = GradientDrawable().apply {
                 cornerRadius = 15f
                 setColor(Color.WHITE)
                 alpha = 180
             }
-
-            background = sparkleDrawable
-
-            // Restore the original background after delay
-            postDelayed({
-                try {
-                    // Restore the original gradient background, not the current one
-                    keyOriginalBackgrounds[this]?.let { originalBackground ->
-                        background = originalBackground
-                    }
-                } catch (e: Exception) {
-                    Log.e("PianoActivity", "Error resetting sparkle effect", e)
-                    // Fallback: restore whatever background was there before
-                    background = currentBackground
-                }
-            }, 100)
+            postDelayed({ background = keyOriginalBackgrounds[this] ?: original }, 100)
         } catch (e: Exception) {
-            Log.e("PianoActivity", "Error adding sparkle effect", e)
+            Log.e("PianoActivity", "Error adding sparkle", e)
         }
     }
 
     private fun adjustBrightness(color: Int, factor: Float): Int {
-        return try {
-            val r = (Color.red(color) * factor).toInt().coerceIn(0, 255)
-            val g = (Color.green(color) * factor).toInt().coerceIn(0, 255)
-            val b = (Color.blue(color) * factor).toInt().coerceIn(0, 255)
-            Color.rgb(r, g, b)
-        } catch (e: Exception) {
-            Log.e("PianoActivity", "Error adjusting brightness", e)
-            color // Return original color on error
-        }
+        val r = (Color.red(color) * factor).toInt().coerceIn(0, 255)
+        val g = (Color.green(color) * factor).toInt().coerceIn(0, 255)
+        val b = (Color.blue(color) * factor).toInt().coerceIn(0, 255)
+        return Color.rgb(r, g, b)
     }
 
-    private fun dpToPx(dp: Int): Int {
-        return try {
-            (dp * resources.displayMetrics.density).toInt()
-        } catch (e: Exception) {
-            Log.e("PianoActivity", "Error converting dp to px", e)
-            dp // Return dp value as fallback
-        }
-    }
+    private fun dpToPx(dp: Int): Int = (dp * resources.displayMetrics.density).toInt()
 
     override fun onPause() {
         super.onPause()
-        try {
-            // Pause background music when activity is paused
-            backgroundMusicPlayer?.let {
-                if (it.isPlaying) {
-                    it.pause()
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("PianoActivity", "Error in onPause", e)
-        }
+        backgroundMusicPlayer?.let { if (it.isPlaying) it.pause() }
     }
 
     override fun onResume() {
         super.onResume()
-        try {
-            // Resume background music if it was playing
-            if (isBackgroundPlaying && backgroundMusicPlayer != null) {
-                backgroundMusicPlayer?.start()
-            }
-        } catch (e: Exception) {
-            Log.e("PianoActivity", "Error in onResume", e)
-        }
+        if (isBackgroundPlaying) backgroundMusicPlayer?.start()
     }
 
     override fun onDestroy() {
+        stopBackgroundMusic()
+        pianoPlayers.values.forEach { it?.release() }
+        pianoPlayers.clear()
         super.onDestroy()
-
-        try {
-            // Clean up background music
-            stopBackgroundMusic()
-
-            // Clean up piano sounds
-            pianoPlayers.values.forEach { player ->
-                try {
-                    player?.release()
-                } catch (e: Exception) {
-                    Log.e("PianoActivity", "Error releasing piano player", e)
-                }
-            }
-            pianoPlayers.clear()
-            musicButtons.clear()
-            pianoKeys.clear()
-            keyOriginalBackgrounds.clear()
-            instrumentSynthesizer = null
-        } catch (e: Exception) {
-            Log.e("PianoActivity", "Error in onDestroy", e)
-        }
     }
 }
-

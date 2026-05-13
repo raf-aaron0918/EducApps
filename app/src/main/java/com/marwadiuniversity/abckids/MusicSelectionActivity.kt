@@ -100,9 +100,9 @@ class MusicSelectionActivity : AppCompatActivity() {
             }
 
             backButton = ImageView(this@MusicSelectionActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(44, 44)
+                layoutParams = LinearLayout.LayoutParams(dpToPx(44), dpToPx(44))
                 setImageResource(R.drawable.ic_back)
-                setPadding(10, 10, 10, 10)
+                setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10))
                 setBackgroundResource(R.drawable.quiz_surface_bg)
                 elevation = 4f
                 contentDescription = "Back"
@@ -122,8 +122,10 @@ class MusicSelectionActivity : AppCompatActivity() {
             addView(topRow)
 
             val titleImage = ImageView(this@MusicSelectionActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(260, 120).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(320), dpToPx(140)).apply {
                     gravity = android.view.Gravity.CENTER_HORIZONTAL
+                    topMargin = dpToPx(12)
+                    bottomMargin = dpToPx(4)
                 }
                 setImageResource(R.drawable.instrument_content)
                 adjustViewBounds = true
@@ -134,56 +136,192 @@ class MusicSelectionActivity : AppCompatActivity() {
         }
     }
 
-private fun createSimpleInstrumentLayout() {
+    private fun createSimpleInstrumentLayout() {
         try {
             instrumentContainer.removeAllViews()
 
             val verticalLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                gravity = android.view.Gravity.CENTER
+                gravity = android.view.Gravity.CENTER_HORIZONTAL
                 layoutParams = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT
-                )
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    addRule(RelativeLayout.CENTER_IN_PARENT)
+                }
             }
 
-            instruments.forEach { instrument ->
-                val button = Button(this).apply {
-                    text = instrument.name
-                    textSize = 18f
-                    setTextColor(Color.WHITE)
-                    typeface = Typeface.DEFAULT_BOLD
-                    isAllCaps = false
-                    gravity = android.view.Gravity.CENTER
-                    background = createEnhancedCircularBackground(instrument.primaryColor, instrument.secondaryColor)
-                    elevation = 18f
-                    setShadowLayer(14f, 6f, 6f, Color.parseColor("#60000000"))
-                    setPadding(20, 24, 20, 24)
-                    setCompoundDrawables(null, null, null, null)
-
-                    setOnClickListener {
-                        val intent = Intent(this@MusicSelectionActivity, instrument.activityClass)
-                        startActivity(intent)
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    }
-                }
-
+            instruments.forEachIndexed { index, instrument ->
+                val card = createPremiumInstrumentCard(instrument)
+                
                 val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    dpToPx(140)
                 ).apply {
-                    val m = 28
-                    setMargins(m, 20, m, 20)
+                    setMargins(dpToPx(24), dpToPx(12), dpToPx(24), dpToPx(12))
                 }
-                button.layoutParams = lp
+                card.layoutParams = lp
+                
+                // Initial state for animation
+                card.alpha = 0f
+                card.translationY = 100f
+                card.scaleX = 0.9f
+                card.scaleY = 0.9f
 
-                verticalLayout.addView(button)
+                verticalLayout.addView(card)
+                
+                // Staggered entrance animation
+                card.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(600)
+                    .setStartDelay(index * 150L)
+                    .setInterpolator(android.view.animation.OvershootInterpolator())
+                    .start()
             }
 
             instrumentContainer.addView(verticalLayout)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun createPremiumInstrumentCard(instrument: InstrumentData): RelativeLayout {
+        val card = RelativeLayout(this).apply {
+            background = createCardBackground(instrument.primaryColor)
+            elevation = dpToPx(8).toFloat()
+            clipToOutline = true
+            
+            setOnClickListener {
+                animateButtonPress(this) {
+                    val intent = Intent(this@MusicSelectionActivity, instrument.activityClass)
+                    startActivity(intent)
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                }
+            }
+        }
+
+        // Glass overlay for that premium look
+        val glassOverlay = View(this).apply {
+            layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+            )
+            background = GradientDrawable().apply {
+                colors = intArrayOf(
+                    Color.parseColor("#40FFFFFF"),
+                    Color.parseColor("#10FFFFFF")
+                )
+                orientation = GradientDrawable.Orientation.TL_BR
+                cornerRadius = dpToPx(24).toFloat()
+            }
+        }
+        card.addView(glassOverlay)
+
+        // Icon
+        val iconView = ImageView(this).apply {
+            id = View.generateViewId()
+            layoutParams = RelativeLayout.LayoutParams(dpToPx(100), dpToPx(100)).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_START)
+                addRule(RelativeLayout.CENTER_VERTICAL)
+                marginStart = dpToPx(20)
+            }
+            setImageResource(instrument.iconResId)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+        }
+        card.addView(iconView)
+
+        // Text container
+        val textContainer = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                addRule(RelativeLayout.END_OF, iconView.id)
+                addRule(RelativeLayout.CENTER_VERTICAL)
+                marginStart = dpToPx(20)
+            }
+        }
+
+        val nameText = TextView(this).apply {
+            text = instrument.name
+            textSize = 28f
+            setTextColor(Color.WHITE)
+            typeface = Typeface.DEFAULT_BOLD
+            setShadowLayer(4f, 2f, 2f, Color.parseColor("#40000000"))
+        }
+        textContainer.addView(nameText)
+
+        val subText = TextView(this).apply {
+            text = "Tap to Play"
+            textSize = 16f
+            setTextColor(Color.parseColor("#E0FFFFFF"))
+            typeface = Typeface.DEFAULT
+        }
+        textContainer.addView(subText)
+
+        card.addView(textContainer)
+
+        // Arrow icon on the right
+        val arrowIcon = TextView(this).apply {
+            text = "→"
+            textSize = 24f
+            setTextColor(Color.WHITE)
+            layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_END)
+                addRule(RelativeLayout.CENTER_VERTICAL)
+                marginEnd = dpToPx(24)
+            }
+        }
+        card.addView(arrowIcon)
+
+        return card
+    }
+
+    private fun createCardBackground(colorHex: String): GradientDrawable {
+        return GradientDrawable().apply {
+            val color = Color.parseColor(colorHex)
+            colors = intArrayOf(
+                color,
+                adjustBrightness(color, 0.8f)
+            )
+            orientation = GradientDrawable.Orientation.TL_BR
+            cornerRadius = dpToPx(24).toFloat()
+            setStroke(dpToPx(2), Color.parseColor("#60FFFFFF"))
+        }
+    }
+
+    private fun adjustBrightness(color: Int, factor: Float): Int {
+        val r = (Color.red(color) * factor).toInt().coerceIn(0, 255)
+        val g = (Color.green(color) * factor).toInt().coerceIn(0, 255)
+        val b = (Color.blue(color) * factor).toInt().coerceIn(0, 255)
+        return Color.rgb(r, g, b)
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    private fun animateButtonPress(view: View, onComplete: () -> Unit) {
+        view.animate()
+            .scaleX(0.95f)
+            .scaleY(0.95f)
+            .setDuration(100)
+            .withEndAction {
+                view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(100)
+                    .withEndAction { onComplete() }
+                    .start()
+            }
+            .start()
     }
 
 
