@@ -150,7 +150,7 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
             .alpha(0f)
             .scaleX(0.8f)
             .scaleY(0.8f)
-            .setDuration(150)
+            .setDuration(100) // Faster transition animation
             .withEndAction {
                 onComplete()
             }
@@ -201,6 +201,7 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
 
                 it.setSpeechRate(0.9f) // Natural flow
                 it.setPitch(1.0f)      // Natural pitch
+                
                 it.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) { isCurrentlySpeaking = true }
                     override fun onDone(utteranceId: String?) { isCurrentlySpeaking = false }
@@ -247,16 +248,19 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
             .alpha(1f)
             .scaleX(1f)
             .scaleY(1f)
-            .setDuration(300)
+            .setDuration(300) // Faster animation for quicker speech
             .withEndAction {
+                // Mark transition as complete and handle pending speech
                 isTransitioning = false
+
                 if (pendingSpeechAfterTransition && isTTSReady) {
                     pendingSpeechAfterTransition = false
+                    // Quick speech after swipe transitions
                     mainHandler.postDelayed({
-                        if (isTTSReady && !isCurrentlySpeaking && !isTransitioning) {
+                        if (isTTSReady && !isCurrentlySpeaking && !isTransitioning && !isDestroyed && !isFinishing) {
                             speakNumber(currentItem)
                         }
-                    }, 50)
+                    }, 50) // Reduced delay for faster response
                 }
             }
             .start()
@@ -264,15 +268,39 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
 
     private fun speakNumber(item: NumberItem) {
         if (!isTTSReady || isDestroyed || isFinishing) return
-        
-        // Stop any current speech to prevent overlapping
+
+        // Stop any current speech
         tts?.stop()
         isCurrentlySpeaking = false
-        
-        // Only speak the word to avoid "2 Two" sounding like "Two Two"
-        val textToSpeak = item.word
-        
-        tts?.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, "NumberSpeak")
+
+        val textToSpeak = "${item.number} for ${item.word}"
+
+        // Minimal delay for immediate speech response
+        mainHandler.postDelayed({
+            if (isTTSReady && tts != null && !isDestroyed && !isFinishing) {
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        val params = Bundle()
+                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "NumberSpeak_${System.currentTimeMillis()}")
+                        val result = tts?.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, params, "NumberSpeak_${System.currentTimeMillis()}")
+                        if (result == TextToSpeech.ERROR) {
+                            isCurrentlySpeaking = false
+                        }
+                    } else {
+                        val params = HashMap<String, String>()
+                        params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "NumberSpeak_${System.currentTimeMillis()}"
+                        @Suppress("DEPRECATION")
+                        val result = tts?.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, params)
+                        if (result == TextToSpeech.ERROR) {
+                            isCurrentlySpeaking = false
+                        }
+                    }
+                } catch (e: Exception) {
+                    isCurrentlySpeaking = false
+                    e.printStackTrace()
+                }
+            }
+        }, 30) // Very short delay for faster speech response
     }
 
     private fun stopAllSpeech() {
@@ -282,6 +310,7 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
 
     override fun onDestroy() {
         stopAllSpeech()
+        mainHandler.removeCallbacksAndMessages(null)
         tts?.shutdown()
         super.onDestroy()
     }
@@ -289,11 +318,23 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
     override fun onPause() {
         super.onPause()
         stopAllSpeech()
+        pendingSpeechAfterTransition = false
+        mainHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onResume() {
         super.onResume()
-        // Removed auto-speak here to prevent double triggering with onInit
+        stopAllSpeech()
         isTransitioning = false
+        pendingSpeechAfterTransition = false
+
+        // If returning from pause and TTS is ready, speak current number
+        if (isTTSReady) {
+            mainHandler.postDelayed({
+                if (isTTSReady && !isCurrentlySpeaking && !isTransitioning && !isDestroyed && !isFinishing) {
+                    speakNumber(NumberData.numberList[currentIndex])
+                }
+            }, 200)
+        }
     }
 }

@@ -362,8 +362,6 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         speakText("${color.name}. ${color.description}")
     }
 
-    private fun dpToPx(dp: Int): Int = (dp * resources.displayMetrics.density).toInt()
-
     private fun initTextToSpeech() {
         textToSpeech = TextToSpeech(this, this)
     }
@@ -371,24 +369,80 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             textToSpeech?.let { tts ->
-                tts.language = Locale.US
-                tts.setSpeechRate(0.8f)
-                tts.setPitch(1.1f)
+                // Set natural human-like voice parameters
+                try {
+                    val bestVoice = tts.voices.filter { v -> 
+                        v.locale.language == Locale.US.language && !v.isNetworkConnectionRequired
+                    }.maxByOrNull { v -> v.quality }
+                    bestVoice?.let { v -> tts.voice = v }
+                } catch (e: Exception) {
+                    tts.setLanguage(Locale.US)
+                }
+
+                tts.setSpeechRate(0.9f) // Natural flow
+                tts.setPitch(1.0f)      // Natural pitch
+                
+                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) { isCurrentlySpeaking = true }
+                    override fun onDone(utteranceId: String?) { isCurrentlySpeaking = false }
+                    override fun onError(utteranceId: String?) { isCurrentlySpeaking = false }
+                })
                 isTTSReady = true
             }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        stopAllSpeech()
+    }
+
     private fun speakText(text: String) {
-        if (isTTSReady) {
-            textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "ShapeSpeak")
-        }
+        if (!isTTSReady || isDestroyed || isFinishing) return
+
+        textToSpeech?.stop()
+        isCurrentlySpeaking = false
+
+        mainHandler.postDelayed({
+            if (isTTSReady && textToSpeech != null && !isDestroyed && !isFinishing) {
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        val params = Bundle()
+                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "ShapeSpeak_${System.currentTimeMillis()}")
+                        val result = textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params, "ShapeSpeak_${System.currentTimeMillis()}")
+                        if (result == TextToSpeech.ERROR) {
+                            isCurrentlySpeaking = false
+                        }
+                    } else {
+                        val params = HashMap<String, String>()
+                        params[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "ShapeSpeak_${System.currentTimeMillis()}"
+                        @Suppress("DEPRECATION")
+                        val result = textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params)
+                        if (result == TextToSpeech.ERROR) {
+                            isCurrentlySpeaking = false
+                        }
+                    }
+                } catch (e: Exception) {
+                    isCurrentlySpeaking = false
+                    e.printStackTrace()
+                }
+            }
+        }, 30)
     }
 
     override fun onDestroy() {
+        stopAllSpeech()
+        mainHandler.removeCallbacksAndMessages(null)
         textToSpeech?.shutdown()
         super.onDestroy()
     }
+
+    private fun stopAllSpeech() {
+        textToSpeech?.stop()
+        isCurrentlySpeaking = false
+    }
+
+    private fun dpToPx(dp: Int): Int = (dp * resources.displayMetrics.density).toInt()
 
     data class ShapeItem(val name: String, val symbol: String, val primaryColor: String, val secondaryColor: String)
     data class ColorItem(val name: String, val primaryColor: String, val secondaryColor: String, val description: String)

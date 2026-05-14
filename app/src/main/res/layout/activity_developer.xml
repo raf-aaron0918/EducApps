@@ -6,72 +6,36 @@
     android:orientation="vertical"
     android:background="@drawable/background">
 
-    <!-- Header Section -->
+<!-- Header Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="20dp"
-        android:background="@drawable/header_gradient"
-        android:elevation="8dp">
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
 
         <!-- Back Button -->
         <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_back"
-            android:padding="10dp"
-            android:background="@drawable/quiz_surface_bg"
-            android:elevation="4dp"
-            android:layout_marginEnd="16dp"
+            android:padding="8dp"
+            android:background="#F0F0F0"
+            android:layout_marginEnd="12dp"
             android:contentDescription="Go back" />
 
-        <LinearLayout
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Developers"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:shadowColor="#80000000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="3" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Meet our development team"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:layout_marginTop="4dp"
-                android:shadowColor="#80000000"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2" />
-
-        </LinearLayout>
-
-        <!-- Developer Icon -->
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="👩‍💻"
-            android:textSize="24sp"
+            android:text="Development Team"
+            android:textColor="#333333"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:background="@drawable/circular_button"
-            android:backgroundTint="#40FFFFFF"
-            android:gravity="center"
-            android:textColor="#FFFFFF"
-            android:contentDescription="Developer information" />
+            android:gravity="center" />
 
     </LinearLayout>
 
@@ -97,125 +61,229 @@
                 app:cardElevation="6dp"
                 app:cardBackgroundColor="#FFFFFF">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+<LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical"
+                     android:padding="20dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Development Team"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:layout_marginBottom="16dp" />
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:text="Development Team"
+                         android:textSize="18sp"
+                         android:textStyle="bold"
+                         android:textColor="#333333"
+                         android:layout_marginBottom="16dp" />
 
-                    <!-- Developer 1 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/rounded_background"
-                        android:backgroundTint="#F8F9FA"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center_vertical">
+                     <!-- Developer 1 -->
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:padding="12dp"
+                         android:background="@drawable/rounded_background"
+                         android:backgroundTint="#F8F9FA"
+                         android:layout_marginBottom="16dp"
+                         android:gravity="center_vertical">
 
-                        <ImageView
-                            android:id="@+id/developer1_photo"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:layout_marginEnd="16dp"
-                            android:clickable="true"
-                             android:focusable="true"
-                             android:src="@drawable/developer1_photo"
-                            android:background="@drawable/circular_button"
-                            android:backgroundTint="#E3F2FD"
-                            android:padding="8dp"
-                            android:scaleType="centerCrop" />
+                         <ImageView
+                             android:id="@+id/developer1_photo"
+                             android:layout_width="70dp"
+                             android:layout_height="70dp"
+                             android:layout_marginEnd="16dp"
+                             android:clickable="true"
+                              android:focusable="true"
+                              android:src="@drawable/dela_rosa"
+                             android:background="@drawable/circular_button"
+                             android:backgroundTint="#E3F2FD"
+                             android:padding="8dp"
+                             android:scaleType="centerCrop" />
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="1"
+                             android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/developer1_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Partner 1 Name"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="#333333" />
+                             <TextView
+                                 android:id="@+id/developer1_name"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Rafael Aaron Dela Rosa"
+                                 android:textSize="16sp"
+                                 android:textStyle="bold"
+                                 android:textColor="#333333" />
 
-                            <TextView
-                                android:id="@+id/developer1_branch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="B.Tech, Computer Engineering"
-                                android:textSize="13sp"
-                                android:textColor="#666666"
-                                android:layout_marginTop="4dp" />
+                             <TextView
+                                 android:id="@+id/developer1_branch"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="BS Computer Science"
+                                 android:textSize="13sp"
+                                 android:textColor="#666666"
+                                 android:layout_marginTop="4dp" />
 
-                        </LinearLayout>
+                         </LinearLayout>
 
-                    </LinearLayout>
+                     </LinearLayout>
 
-                    <!-- Developer 2 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:background="@drawable/rounded_background"
-                        android:backgroundTint="#F8F9FA"
-                        android:gravity="center_vertical">
+                     <!-- Developer 2 -->
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:padding="12dp"
+                         android:background="@drawable/rounded_background"
+                         android:backgroundTint="#F8F9FA"
+                         android:layout_marginBottom="16dp"
+                         android:gravity="center_vertical">
 
-                        <ImageView
-                            android:id="@+id/developer2_photo"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:layout_marginEnd="16dp"
-                            android:clickable="true"
-                             android:focusable="true"
-                             android:src="@drawable/developer2_photo"
-                            android:background="@drawable/circular_button"
-                            android:backgroundTint="#E3F2FD"
-                            android:padding="8dp"
-                            android:scaleType="centerCrop" />
+                         <ImageView
+                             android:id="@+id/developer2_photo"
+                             android:layout_width="70dp"
+                             android:layout_height="70dp"
+                             android:layout_marginEnd="16dp"
+                             android:clickable="true"
+                              android:focusable="true"
+                              android:src="@drawable/mendoza"
+                             android:background="@drawable/circular_button"
+                             android:backgroundTint="#E3F2FD"
+                             android:padding="8dp"
+                             android:scaleType="centerCrop" />
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="1"
+                             android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/developer2_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Partner 2 Name"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="#333333" />
+                             <TextView
+                                 android:id="@+id/developer2_name"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="John Patrick Mendoza"
+                                 android:textSize="16sp"
+                                 android:textStyle="bold"
+                                 android:textColor="#333333" />
 
-                            <TextView
-                                android:id="@+id/developer2_branch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="B.Tech, Computer Engineering"
-                                android:textSize="13sp"
-                                android:textColor="#666666"
-                                android:layout_marginTop="4dp" />
+                             <TextView
+                                 android:id="@+id/developer2_branch"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="BS Computer Science"
+                                 android:textSize="13sp"
+                                 android:textColor="#666666"
+                                 android:layout_marginTop="4dp" />
 
-                        </LinearLayout>
+                         </LinearLayout>
 
-                    </LinearLayout>
+                     </LinearLayout>
 
-                </LinearLayout>
+                     <!-- Developer 3 -->
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:padding="12dp"
+                         android:background="@drawable/rounded_background"
+                         android:backgroundTint="#F8F9FA"
+                         android:layout_marginBottom="16dp"
+                         android:gravity="center_vertical">
+
+                         <ImageView
+                             android:id="@+id/developer3_photo"
+                             android:layout_width="70dp"
+                             android:layout_height="70dp"
+                             android:layout_marginEnd="16dp"
+                             android:clickable="true"
+                              android:focusable="true"
+                              android:src="@drawable/silvan"
+                             android:background="@drawable/circular_button"
+                             android:backgroundTint="#E3F2FD"
+                             android:padding="8dp"
+                             android:scaleType="centerCrop" />
+
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="1"
+                             android:orientation="vertical">
+
+                             <TextView
+                                 android:id="@+id/developer3_name"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Klein Silvan"
+                                 android:textSize="16sp"
+                                 android:textStyle="bold"
+                                 android:textColor="#333333" />
+
+                             <TextView
+                                 android:id="@+id/developer3_branch"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="BS Computer Science"
+                                 android:textSize="13sp"
+                                 android:textColor="#666666"
+                                 android:layout_marginTop="4dp" />
+
+                         </LinearLayout>
+
+                     </LinearLayout>
+
+                     <!-- Developer 4 -->
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:padding="12dp"
+                         android:background="@drawable/rounded_background"
+                         android:backgroundTint="#F8F9FA"
+                         android:gravity="center_vertical">
+
+                         <ImageView
+                             android:id="@+id/developer4_photo"
+                             android:layout_width="70dp"
+                             android:layout_height="70dp"
+                             android:layout_marginEnd="16dp"
+                             android:clickable="true"
+                              android:focusable="true"
+                              android:src="@drawable/esguerra"
+                             android:background="@drawable/circular_button"
+                             android:backgroundTint="#E3F2FD"
+                             android:padding="8dp"
+                             android:scaleType="centerCrop" />
+
+                         <LinearLayout
+                             android:layout_width="0dp"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="1"
+                             android:orientation="vertical">
+
+                             <TextView
+                                 android:id="@+id/developer4_name"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Jo Mari Esguerra"
+                                 android:textSize="16sp"
+                                 android:textStyle="bold"
+                                 android:textColor="#333333" />
+
+                             <TextView
+                                 android:id="@+id/developer4_branch"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="BS Computer Science"
+                                 android:textSize="13sp"
+                                 android:textColor="#666666"
+                                 android:layout_marginTop="4dp" />
+
+                         </LinearLayout>
+
+                     </LinearLayout>
+
+                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
