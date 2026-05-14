@@ -12,17 +12,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Project Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Using Educational Apps to Combat Illiteracy in Unprivileged Areas"
-            android:textSize="16sp"
-            android:textColor="#FF6D00"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp" />
-
         <!-- App Icon/Logo -->
         <ImageView
             android:layout_width="90dp"
@@ -170,22 +159,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Made with"
-                android:textSize="14sp"
-                android:textColor="#666666" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" ❤️ "
-                android:textSize="18sp"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="6dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="for Kids"
+                android:text="Made with ❤️ for Kids"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#FF6D00" />
@@ -195,7 +169,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="© 2026 FunLearn Kids - Educational Initiative"
+            android:text="© 2026 City College of Tagaytay"
             android:textSize="12sp"
             android:textColor="#999999"
             android:layout_gravity="center_horizontal" />
