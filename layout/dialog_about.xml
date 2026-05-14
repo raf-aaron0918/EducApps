@@ -75,7 +75,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ABC Kids is an educational app designed to help children learn alphabets, numbers, shapes, colors, and much more through interactive and engaging activities. With bright visuals, cheerful sounds, and guided lessons, it makes early learning exciting and fun!"
+                    android:text="FunLearn kids is an educational app designed to help children learn alphabets, numbers, shapes, colors, and much more through interactive and engaging activities. With bright visuals, cheerful sounds, and guided lessons, it makes early learning exciting and fun!"
                     android:textSize="14sp"
                     android:textColor="#666666"
                     android:lineSpacingExtra="4dp" />

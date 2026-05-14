@@ -24,10 +24,16 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var sharedPreferences: SharedPreferences
     private var isSoundEnabled = true
+    private var isMusicEnabled = true
+    private var isVoiceEnabled = true
+    private var isHapticEnabled = true
 
     companion object {
         private const val PREFS_NAME = "FunLearnKidsPrefs"
         private const val KEY_SOUND_ENABLED = "sound_enabled"
+        private const val KEY_MUSIC_ENABLED = "music_enabled"
+        private const val KEY_VOICE_ENABLED = "voice_enabled"
+        private const val KEY_HAPTIC_ENABLED = "haptic_enabled"
     }
 
     private val categoryCards by lazy {
@@ -65,11 +71,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun loadSettings() {
         isSoundEnabled = sharedPreferences.getBoolean(KEY_SOUND_ENABLED, true)
+        isMusicEnabled = sharedPreferences.getBoolean(KEY_MUSIC_ENABLED, true)
+        isVoiceEnabled = sharedPreferences.getBoolean(KEY_VOICE_ENABLED, true)
+        isHapticEnabled = sharedPreferences.getBoolean(KEY_HAPTIC_ENABLED, true)
     }
 
     private fun saveSettings() {
         with(sharedPreferences.edit()) {
             putBoolean(KEY_SOUND_ENABLED, isSoundEnabled)
+            putBoolean(KEY_MUSIC_ENABLED, isMusicEnabled)
+            putBoolean(KEY_VOICE_ENABLED, isVoiceEnabled)
+            putBoolean(KEY_HAPTIC_ENABLED, isHapticEnabled)
             apply()
         }
     }
@@ -83,7 +95,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 mediaPlayer?.apply {
                     isLooping = true
                     setVolume(0.3f, 0.3f)
-                    if (isSoundEnabled) start()
+                    if (isMusicEnabled) start()
                 }
             } else {
                 mediaPlayer = null
@@ -115,46 +127,46 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun showSettingsDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_settings, null)
-        val soundToggle = dialogView.findViewById<Switch>(R.id.sound_toggle_switch)
-        val soundIcon = dialogView.findViewById<TextView>(R.id.sound_toggle_icon)
+        val musicToggle = dialogView.findViewById<Switch>(R.id.music_toggle_switch)
+        val voiceToggle = dialogView.findViewById<Switch>(R.id.voice_toggle_switch)
+        val hapticToggle = dialogView.findViewById<Switch>(R.id.haptic_toggle_switch)
 
-        soundToggle.isChecked = isSoundEnabled
-        updateSoundIcon(soundIcon, isSoundEnabled)
-
-        soundToggle.setOnCheckedChangeListener { _, isChecked ->
-            updateSoundIcon(soundIcon, isChecked)
-        }
+        musicToggle.isChecked = isMusicEnabled
+        voiceToggle.isChecked = isVoiceEnabled
+        hapticToggle.isChecked = isHapticEnabled
 
         AlertDialog.Builder(this)
             .setTitle("Settings")
             .setView(dialogView)
             .setPositiveButton("Done") { dialog, _ ->
-                isSoundEnabled = soundToggle.isChecked
+                isMusicEnabled = musicToggle.isChecked
+                isVoiceEnabled = voiceToggle.isChecked
+                isHapticEnabled = hapticToggle.isChecked
                 saveSettings()
 
-                if (isSoundEnabled) {
+                if (isMusicEnabled) {
                     try {
                         mediaPlayer?.start()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    speakText("Settings saved")
                 } else {
                     try {
                         mediaPlayer?.pause()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    Toast.makeText(this, "Settings saved - Sound disabled", Toast.LENGTH_SHORT).show()
+                }
+
+                if (isVoiceEnabled && isMusicEnabled) {
+                    speakText("Settings saved")
+                } else {
+                    Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
                 }
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
             .show()
-    }
-
-    private fun updateSoundIcon(iconTextView: TextView, isSoundOn: Boolean) {
-        iconTextView.text = if (isSoundOn) "On" else "Off"
     }
 
     private fun showContactUsDialog() {
@@ -224,7 +236,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun speakText(text: String, utteranceId: String = "DEFAULT") {
-        if (!isTTSReady || textToSpeech == null || !isSoundEnabled) {
+        if (!isTTSReady || textToSpeech == null || !isVoiceEnabled) {
             return
         }
 
@@ -304,7 +316,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         loadSettings()
 
         // Start music when resuming if sound is enabled
-        if (isSoundEnabled && mediaPlayer != null) {
+        if (isMusicEnabled && mediaPlayer != null) {
             try {
                 if (!mediaPlayer!!.isPlaying) {
                     mediaPlayer?.start()
