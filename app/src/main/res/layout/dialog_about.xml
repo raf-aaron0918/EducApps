@@ -12,6 +12,17 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- Project Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Using Educational Apps to Combat Illiteracy in Unprivileged Areas"
+            android:textSize="16sp"
+            android:textColor="#FF6D00"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp" />
+
         <!-- App Icon/Logo -->
         <ImageView
             android:layout_width="90dp"
@@ -24,7 +35,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ABC Kids - Learn &amp; Play"
+            android:text="FunLearn Kids"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#2196F3"
@@ -56,22 +67,22 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📚 About This App"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#1565C0"
-                    android:layout_marginBottom="8dp" />
+<TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📚 About This App"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#1565C0"
+                        android:layout_marginBottom="8dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ABC Kids is an educational app designed to help children learn alphabets, numbers, shapes, colors, and much more through interactive and engaging activities. With bright visuals, cheerful sounds, and guided lessons, it makes early learning exciting and fun!"
-                    android:textSize="14sp"
-                    android:textColor="#424242"
-                    android:lineSpacingExtra="4dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FunLearn Kids is an offline educational app designed specifically for unprivileged areas with limited internet access. The app provides interactive learning for alphabets, numbers, shapes, colors, and more — all without requiring an internet connection. With engaging visuals, offline voice guidance, and playful activities, it makes quality education accessible to every child."
+                        android:textSize="14sp"
+                        android:textColor="#424242"
+                        android:lineSpacingExtra="4dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -90,22 +101,22 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎯 Our Goal"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#E65100"
-                    android:layout_marginBottom="8dp" />
+<TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎯 Our Goal"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#E65100"
+                        android:layout_marginBottom="8dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Our goal is to blend education with entertainment — keeping children curious, creative, and confident as they learn. We aim to make every moment of learning feel like play, inspiring kids to explore, imagine, and grow with joy!"
-                    android:textSize="14sp"
-                    android:textColor="#424242"
-                    android:lineSpacingExtra="4dp" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Our goal is to combat illiteracy in unprivileged areas by providing free, offline access to quality education. We aim to bridge the educational gap where internet and resources are scarce, ensuring every child has the opportunity to learn, explore, and build a brighter future — regardless of their location or circumstances."
+                        android:textSize="14sp"
+                        android:textColor="#424242"
+                        android:lineSpacingExtra="4dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -124,24 +135,24 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✨ Features"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32"
-                    android:layout_marginBottom="8dp" />
+<TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✨ Features"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#2E7D32"
+                        android:layout_marginBottom="8dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="• Interactive video lessons\n• Fun games and creative activities\n• Voice-guided learning experience\n• Colorful visuals and animations\n• Safe, child-friendly interface"
-                    android:textSize="13sp"
-                    android:textColor="#424242"
-                    android:lineSpacingExtra="3dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="• Fully offline - no internet required\n• Interactive video lessons for learning\n• Voice-guided learning experience\n• Colorful visuals and animations\n• Designed for unprivileged areas\n• Safe, child-friendly interface"
+                        android:textSize="13sp"
+                        android:textColor="#424242"
+                        android:lineSpacingExtra="3dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -184,7 +195,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="© 2024 Marwadi University"
+            android:text="© 2026 FunLearn Kids - Educational Initiative"
             android:textSize="12sp"
             android:textColor="#999999"
             android:layout_gravity="center_horizontal" />
