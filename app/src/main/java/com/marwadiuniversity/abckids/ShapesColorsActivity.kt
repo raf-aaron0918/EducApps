@@ -209,65 +209,66 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         return card
     }
 
-    private fun showShapePopup(shapeItem: ShapeItem) {
-        val dialog = android.app.Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
-        val container = RelativeLayout(this).apply {
-            setBackgroundColor(Color.parseColor("#CC000000"))
-            setOnClickListener { dialog.dismiss() }
-        }
+private fun showShapePopup(shapeItem: ShapeItem) {
+         val dialog = android.app.Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
+         val container = RelativeLayout(this).apply {
+             setBackgroundColor(Color.parseColor("#CC000000"))
+             setOnClickListener { dialog.dismiss() }
+         }
 
-        val popupCard = CardView(this).apply {
-            radius = dpToPx(40).toFloat()
-            cardElevation = dpToPx(20).toFloat()
-            setCardBackgroundColor(Color.WHITE)
-            layoutParams = RelativeLayout.LayoutParams(dpToPx(300), dpToPx(400)).apply {
-                addRule(RelativeLayout.CENTER_IN_PARENT)
-            }
-        }
+         val popupCard = CardView(this).apply {
+             radius = dpToPx(40).toFloat()
+             cardElevation = dpToPx(20).toFloat()
+             setCardBackgroundColor(Color.WHITE)
+             layoutParams = RelativeLayout.LayoutParams(dpToPx(300), dpToPx(400)).apply {
+                 addRule(RelativeLayout.CENTER_IN_PARENT)
+             }
+         }
 
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(dpToPx(32), dpToPx(32), dpToPx(32), dpToPx(32))
-        }
+         val layout = LinearLayout(this).apply {
+             orientation = LinearLayout.VERTICAL
+             gravity = Gravity.CENTER
+             setPadding(dpToPx(32), dpToPx(32), dpToPx(32), dpToPx(32))
+         }
 
-        val bigIcon = CardView(this).apply {
-            radius = dpToPx(90).toFloat()
-            layoutParams = LinearLayout.LayoutParams(dpToPx(180), dpToPx(180)).apply { bottomMargin = dpToPx(24) }
-            background = GradientDrawable(GradientDrawable.Orientation.TL_BR, 
-                intArrayOf(Color.parseColor(shapeItem.primaryColor), Color.parseColor(shapeItem.secondaryColor))).apply {
-                shape = GradientDrawable.OVAL
-            }
-        }
-        val bigSymbol = TextView(this).apply {
-            text = shapeItem.symbol
-            textSize = 80f
-            setTextColor(Color.WHITE)
-            gravity = Gravity.CENTER
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        }
-        bigIcon.addView(bigSymbol)
+         val bigIcon = CardView(this).apply {
+             radius = dpToPx(90).toFloat()
+             layoutParams = LinearLayout.LayoutParams(dpToPx(180), dpToPx(180)).apply { bottomMargin = dpToPx(24) }
+             background = GradientDrawable(GradientDrawable.Orientation.TL_BR,
+                 intArrayOf(Color.parseColor(shapeItem.primaryColor), Color.parseColor(shapeItem.secondaryColor))).apply {
+                 shape = GradientDrawable.OVAL
+             }
+         }
+         val bigSymbol = TextView(this).apply {
+             text = shapeItem.symbol
+             textSize = 80f
+             setTextColor(Color.WHITE)
+             gravity = Gravity.CENTER
+             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+         }
+         bigIcon.addView(bigSymbol)
 
-        val bigName = TextView(this).apply {
-            text = shapeItem.name
-            textSize = 36f
-            setTextColor(Color.parseColor("#2C3E50"))
-            typeface = Typeface.DEFAULT_BOLD
-        }
+val bigName = TextView(this).apply {
+              text = shapeItem.name
+              textSize = 36f
+              setTextColor(Color.parseColor("#2C3E50"))
+              typeface = Typeface.DEFAULT_BOLD
+              gravity = Gravity.CENTER
+          }
 
-        layout.addView(bigIcon)
-        layout.addView(bigName)
-        popupCard.addView(layout)
-        container.addView(popupCard)
-        dialog.setContentView(container)
-        dialog.show()
+         layout.addView(bigIcon)
+         layout.addView(bigName)
+         popupCard.addView(layout)
+         container.addView(popupCard)
+         dialog.setContentView(container)
+         dialog.show()
 
-        popupCard.scaleX = 0f
-        popupCard.scaleY = 0f
-        popupCard.animate().scaleX(1f).scaleY(1f).setDuration(400).setInterpolator(OvershootInterpolator()).start()
-        
-        speakText(shapeItem.name)
-    }
+         popupCard.scaleX = 0f
+         popupCard.scaleY = 0f
+         popupCard.animate().scaleX(1f).scaleY(1f).setDuration(400).setInterpolator(OvershootInterpolator()).start()
+
+         speakText(shapeItem.name)
+     }
 
     private fun createBeautifulColorCard(color: ColorItem): CardView {
         val card = CardView(this).apply {
@@ -304,63 +305,64 @@ class ShapesColorsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         return card
     }
 
-    private fun showColorPopup(color: ColorItem) {
-        val dialog = android.app.Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
-        val container = RelativeLayout(this).apply {
-            setBackgroundColor(Color.parseColor("#CC000000"))
-            setOnClickListener { dialog.dismiss() }
-        }
+private fun showColorPopup(color: ColorItem) {
+         val dialog = android.app.Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
+         val container = RelativeLayout(this).apply {
+             setBackgroundColor(Color.parseColor("#CC000000"))
+             setOnClickListener { dialog.dismiss() }
+         }
 
-        val popupCard = CardView(this).apply {
-            radius = dpToPx(40).toFloat()
-            cardElevation = dpToPx(20).toFloat()
-            setCardBackgroundColor(Color.WHITE)
-            layoutParams = RelativeLayout.LayoutParams(dpToPx(300), dpToPx(400)).apply {
-                addRule(RelativeLayout.CENTER_IN_PARENT)
-            }
-        }
+         val popupCard = CardView(this).apply {
+             radius = dpToPx(40).toFloat()
+             cardElevation = dpToPx(20).toFloat()
+             setCardBackgroundColor(Color.WHITE)
+             layoutParams = RelativeLayout.LayoutParams(dpToPx(300), dpToPx(400)).apply {
+                 addRule(RelativeLayout.CENTER_IN_PARENT)
+             }
+         }
 
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding(dpToPx(32), dpToPx(32), dpToPx(32), dpToPx(32))
-        }
+         val layout = LinearLayout(this).apply {
+             orientation = LinearLayout.VERTICAL
+             gravity = Gravity.CENTER
+             setPadding(dpToPx(32), dpToPx(32), dpToPx(32), dpToPx(32))
+         }
 
-        val bigColor = CardView(this).apply {
-            radius = dpToPx(80).toFloat()
-            layoutParams = LinearLayout.LayoutParams(dpToPx(160), dpToPx(160)).apply { bottomMargin = dpToPx(24) }
-            setCardBackgroundColor(Color.parseColor(color.primaryColor))
-        }
+         val bigColor = CardView(this).apply {
+             radius = dpToPx(80).toFloat()
+             layoutParams = LinearLayout.LayoutParams(dpToPx(160), dpToPx(160)).apply { bottomMargin = dpToPx(24) }
+             setCardBackgroundColor(Color.parseColor(color.primaryColor))
+         }
 
-        val bigName = TextView(this).apply {
-            text = color.name
-            textSize = 36f
-            setTextColor(Color.parseColor("#2C3E50"))
-            typeface = Typeface.DEFAULT_BOLD
-        }
+         val bigName = TextView(this).apply {
+             text = color.name
+             textSize = 28f
+             setTextColor(Color.parseColor("#2C3E50"))
+             typeface = Typeface.DEFAULT_BOLD
+             gravity = Gravity.CENTER
+         }
 
-        val descView = TextView(this).apply {
-            text = color.description
-            textSize = 16f
-            setTextColor(Color.parseColor("#7F8C8D"))
-            gravity = Gravity.CENTER
-            setPadding(0, dpToPx(10), 0, 0)
-        }
+         val descView = TextView(this).apply {
+             text = color.description
+             textSize = 16f
+             setTextColor(Color.parseColor("#7F8C8D"))
+             gravity = Gravity.CENTER
+             setPadding(0, dpToPx(10), 0, 0)
+         }
 
-        layout.addView(bigColor)
-        layout.addView(bigName)
-        layout.addView(descView)
-        popupCard.addView(layout)
-        container.addView(popupCard)
-        dialog.setContentView(container)
-        dialog.show()
+         layout.addView(bigColor)
+         layout.addView(bigName)
+         layout.addView(descView)
+         popupCard.addView(layout)
+         container.addView(popupCard)
+         dialog.setContentView(container)
+         dialog.show()
 
-        popupCard.scaleX = 0f
-        popupCard.scaleY = 0f
-        popupCard.animate().scaleX(1f).scaleY(1f).setDuration(400).setInterpolator(OvershootInterpolator()).start()
-        
-        speakText("${color.name}. ${color.description}")
-    }
+         popupCard.scaleX = 0f
+         popupCard.scaleY = 0f
+         popupCard.animate().scaleX(1f).scaleY(1f).setDuration(400).setInterpolator(OvershootInterpolator()).start()
+
+         speakText("${color.name}. ${color.description}")
+     }
 
     private fun initTextToSpeech() {
         textToSpeech = TextToSpeech(this, this)

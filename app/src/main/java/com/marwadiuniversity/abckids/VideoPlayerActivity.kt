@@ -3,8 +3,8 @@ package com.marwadiuniversity.abckids
 import android.net.Uri
 import android.os.Bundle
 import android.widget.MediaController
-import android.widget.VideoView
 import android.widget.ImageView
+import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 
 class VideoPlayerActivity : AppCompatActivity() {

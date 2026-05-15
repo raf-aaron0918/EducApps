@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background">
 
-    <!-- Header with back button -->
+    <!-- Simple Header Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +15,8 @@
         android:paddingStart="16dp"
         android:paddingTop="14dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="8dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/btn_back"
@@ -30,31 +32,70 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Video Learning"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#3E2723" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
         <Space
             android:layout_width="44dp"
             android:layout_height="44dp" />
 
     </LinearLayout>
 
+    <!-- Content Header Image -->
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:contentDescription="Videos"
+        android:scaleType="fitCenter"
+        android:src="@drawable/videos_content" />
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Video Learning"
+        android:textSize="22sp"
+        android:textColor="#FF0F172A"
+        android:fontFamily="sans-serif-black"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:letterSpacing="-0.01" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Watch and learn with fun nursery rhymes"
+        android:textSize="13sp"
+        android:textColor="#FF64748B"
+        android:fontFamily="sans-serif"
+        android:layout_marginTop="2dp" />
+
+    <!-- Video Count Badge -->
+    <TextView
+        android:id="@+id/video_count_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center"
+        android:text="8 Videos"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@drawable/button_primary"
+        android:elevation="2dp" />
+
     <!-- Video List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="12dp"
         android:clipToPadding="false" />
 
 </LinearLayout>

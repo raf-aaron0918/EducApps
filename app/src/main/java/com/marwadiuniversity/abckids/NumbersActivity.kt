@@ -186,40 +186,40 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
         tts = TextToSpeech(this, this)
     }
 
-    override fun onInit(status: Int) {
+override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            tts?.let {
+            tts?.let { tts ->
                 // Set natural human-like voice parameters
                 try {
-                    val bestVoice = it.voices.filter { v -> 
+                    val bestVoice = tts.voices.filter { v ->
                         v.locale.language == Locale.US.language && !v.isNetworkConnectionRequired
                     }.maxByOrNull { v -> v.quality }
-                    bestVoice?.let { v -> it.voice = v }
+                    bestVoice?.let { v -> tts.voice = v }
                 } catch (e: Exception) {
-                    it.setLanguage(Locale.US)
+                    tts.setLanguage(Locale.US)
                 }
 
-                it.setSpeechRate(0.9f) // Natural flow
-                it.setPitch(1.0f)      // Natural pitch
-                
-                it.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                tts.setSpeechRate(0.9f)
+                tts.setPitch(1.0f)
+
+                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) { isCurrentlySpeaking = true }
                     override fun onDone(utteranceId: String?) { isCurrentlySpeaking = false }
                     override fun onError(utteranceId: String?) { isCurrentlySpeaking = false }
                 })
                 isTTSReady = true
 
-                if (shouldAutoSpeakOnInit) {
-                    shouldAutoSpeakOnInit = false
-                    mainHandler.postDelayed({
-                        if (isTTSReady && !isDestroyed && !isFinishing) {
-                            speakNumber(NumberData.numberList[currentIndex])
-                        }
-                    }, 500)
-                }
+if (shouldAutoSpeakOnInit) {
+                     shouldAutoSpeakOnInit = false
+                     mainHandler.postDelayed({
+                         if (isTTSReady && !isDestroyed && !isFinishing) {
+                             speakNumber(NumberData.numberList[currentIndex])
+                         }
+                     }, 500)
+                 }
             }
         }
-    }
+}
 
     private fun displayCurrentNumber() {
         val currentItem = NumberData.numberList[currentIndex]
@@ -273,7 +273,7 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
         tts?.stop()
         isCurrentlySpeaking = false
 
-        val textToSpeak = "${item.number} for ${item.word}"
+        val textToSpeak = item.number
 
         // Minimal delay for immediate speech response
         mainHandler.postDelayed({
@@ -327,14 +327,5 @@ class NumbersActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Gestur
         stopAllSpeech()
         isTransitioning = false
         pendingSpeechAfterTransition = false
-
-        // If returning from pause and TTS is ready, speak current number
-        if (isTTSReady) {
-            mainHandler.postDelayed({
-                if (isTTSReady && !isCurrentlySpeaking && !isTransitioning && !isDestroyed && !isFinishing) {
-                    speakNumber(NumberData.numberList[currentIndex])
-                }
-            }, 200)
-        }
     }
 }
